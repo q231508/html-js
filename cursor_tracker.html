@@ -3,6 +3,9 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
             <style>
+                * {
+                    cursor: default
+                }
                 /* From https://jsfiddle.net/CRSVU/ */
                 html, body { height: 100%; padding: 0; margin: 0; }
                 div { width: 50%; 
@@ -17,9 +20,19 @@
                 #q2 { background-color: #ffffff; }
                 #q3 { background-color: #ffffff; }
                 #q4 { background-color: #ffffff; }
+                #cursor { 
+                    position: fixed;
+                    font-size: 50px;
+                    z-index: 100;
+                    transform: translate(-62%, -158%);
+
+                }
+                
             </style>
     </head>
     <body>
+        <p id="cursor">.</p>
+
         <div id="q1">
             <h1>Q1</h1>
             <p id="xpos">X Position: </p>
@@ -38,7 +51,7 @@
             <h1>Q4</h1>
             <p id="xpos" >X Position: </p>
             <p id="ypos">Y Position: </p>
-            <p id="pct">% Away from next quadrant: </p>
+            <p id="pct" >% Away from next quadrant: </p>
         </div>
 
         <div id="q3">
@@ -81,8 +94,12 @@
             parentDOM.querySelector("#xpos").innerHTML = `X Position: ${x}px`;
             parentDOM.querySelector("#ypos").innerHTML = `Y Position: ${y}px`;
             parentDOM.querySelector("#pct").innerHTML = `% Away from next quadrant: ${pct}`;
-            parentDOM.querySelector("#pct").innerHTML = `% Away from next quadrant: ${pct}`;
+            parentDOM.querySelector("#pct").innerHTML = `% Away from next quadrant: ${pct}`;            
             
+            document.getElementById("cursor").style.left = `${event.clientX}px`;
+            document.getElementById("cursor").style.top = `${event.clientY}px`;
+            document.getElementById("cursor").style.color = `hsl(0, 0%, ${Math.abs((pct)-100)}%)`;
+
             parentDOM.querySelectorAll("p").forEach( i => {
                 i.style.color = `hsl(${(hue-180) % 360}, 100%, ${Math.abs((pct)-100)*.75}%)`;
 
