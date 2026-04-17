@@ -8,17 +8,16 @@
         <p>Watch the collection grow :0</p>
         <label id="count">0</label> <span>Tracks</span>
         <br>
-        <input id="music" type="file" accept="audio/mp3, audio/wav">
+        <input multiple id="music" type="file" accept="audio/mp3, audio/wav">
     </body>
     <script>
     var count = 0;
     function createTrack() {
         
         const input = document.getElementById("music");
-        const file = input.files[0];
 
         // Main logic
-        if (file) {
+        for(let file of input.files) {
             // 1. Create url for audio src since we cannot use fakepath directly
             const url = URL.createObjectURL(file);
 
@@ -26,7 +25,7 @@
             //    This is where we store each track's title, player, and any buttons
             const div = document.createElement("div");
             const track = document.createElement("p");
-            track.innerHTML = input.value.split("fakepath\\")[1];
+            track.innerHTML = file.name;
 
             // Reference https://stackoverflow.com/questions/37735208/create-audio-element-dynamically-in-javascript
             const sound = document.createElement("audio");
@@ -83,8 +82,6 @@
 
     function main() {
         document.getElementById("music").addEventListener("input", createTrack);
-
-        //TODO: Multi track upload would be nice QOL addition
     }
     window.addEventListener("load", main);
     </script>
