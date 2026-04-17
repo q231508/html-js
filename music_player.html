@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+    <style>
+        div {outline: 1px solid rgb(0, 0, 0);}
+    </style>
+    <body>
+        <h1>A music player</h1>
+        <p>Watch the collection grow :0</p>
+        <label id="count">0</label> <span>Tracks</span>
+        <br>
+        <input id="music" type="file" accept="audio/mp3, audio/wav">
+    </body>
+    <script>
+    var count = 0;
+    function createTrack() {
+        
+        const input = document.getElementById("music");
+        const file = input.files[0];
+
+        // Main logic
+        if (file) {
+            // 1. Create url for audio src since we cannot use fakepath directly
+            const url = URL.createObjectURL(file);
+
+            // 2. Dynamically create a div for each new track uploaded
+            //    This is where we store each track's title, player, and any buttons
+            const div = document.createElement("div");
+            const track = document.createElement("p");
+            track.innerHTML = input.value.split("fakepath\\")[1];
+
+            // Reference https://stackoverflow.com/questions/37735208/create-audio-element-dynamically-in-javascript
+            const sound = document.createElement("audio");
+            sound.id = "track"+count;
+            sound.controls = 'controls';
+            sound.loop = false;
+            sound.src = url;
+
+            // QOL addition: Pause all other tracks when hitting play
+            sound.addEventListener("play", () => {
+                document.querySelectorAll("audio").forEach(otherTrack => {
+                    if (otherTrack !== sound){
+                        otherTrack.pause();
+                    }
+                })
+            })
+
+            // QOL addition: Loop button
+            const loopBtn = document.createElement("button");
+            loopBtn.textContent = "↳↰ Loop  "
+            loopBtn.addEventListener("click", () =>{
+                sound.loop = !sound.loop;
+                if (sound.loop){
+                    loopBtn.textContent = "↳↰ Loop ✓";
+                }
+                else {
+                    loopBtn.textContent = "↳↰ Loop  ";
+                }
+            });
+
+            // QOL addition: Delete button
+            const deleteBtn = document.createElement("button");
+            deleteBtn.textContent = "Remove Track"
+            deleteBtn.addEventListener("click", () =>{
+                div.remove();
+                count-=1;
+                document.getElementById("count").innerHTML = count;
+                return;
+            });
+
+            // 4. Attach the div and its children to the document
+            document.body.appendChild(div);
+            div.appendChild(track);
+            div.appendChild(sound);
+            div.appendChild(loopBtn);
+            div.appendChild(deleteBtn);
+
+            // 5. Update number of tracks uploaded
+            count+=1;
+            document.getElementById("count").innerHTML = count;
+            
+        }   
+    }
+
+    function main() {
+        document.getElementById("music").addEventListener("input", createTrack);
+
+        //TODO: Multi track upload would be nice QOL addition
+    }
+    window.addEventListener("load", main);
+    </script>
+</html>
