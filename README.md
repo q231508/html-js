@@ -1,8 +1,8 @@
-# Just ideas
+# Small HTML projects
 
-I don't know html, js, or css.
+Learning html, js, and css for a course.
 
-Learning them for a course.
+[Repo](https://github.com/q231508/html-js)
 
 [Cursor Tracker](https://q231508.github.io/html-js/cursor_tracker)
 
