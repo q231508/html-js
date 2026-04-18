@@ -43,10 +43,6 @@
                 })
             })
 
-            sound.addEventListener("loadeddata", () => {
-                URL.revokeObjectURL(url);
-            });
-
             // QOL addition: Loop button
             const loopBtn = document.createElement("button");
             loopBtn.textContent = "↳↰ Loop  "
