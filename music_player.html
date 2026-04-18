@@ -60,6 +60,8 @@
             const deleteBtn = document.createElement("button");
             deleteBtn.textContent = "Remove Track"
             deleteBtn.addEventListener("click", () =>{
+                sound.pause();
+                URL.revokeObjectURL(url); 
                 div.remove();
                 count-=1;
                 document.getElementById("count").innerHTML = count;
