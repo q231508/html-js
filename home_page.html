@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html>
+    <style>
+        body {
+            background-color: #2b2b28;
+            font-family: Arial, sans-serif;
+            color: #e0bb72;
+        }
+        nav {
+            display: flex;
+            align-items: center;
+            
+        }
+        .middle {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        }
+        nav #home, #about, #projects, #extra {
+            margin-right: auto;
+            text-align: center;
+            border-top: 2px rgb(173, 173, 173) solid;
+            border-left: 2px rgb(173, 173, 173) solid;
+            padding: 10px;    
+            color: #e0bb72;
+        }
+        nav #gh, #ln, #x{
+            margin-left: auto;
+
+        }
+        @keyframes myAnimation {
+            from {
+                opacity: 0;
+                transform: translateY(20px); 
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes txtLikePopIn {
+            to{ opacity: 1;}
+        }
+        body {
+            animation: myAnimation .5s;
+        }
+        p {
+            color: rgba(240, 255, 255, 0.793);
+            margin: 0;
+            line-height: 1.2;
+        }
+        p + p {
+            margin-top: 4px;
+        }
+        a {
+        text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+
+
+    </style>
+    <body >
+        <nav>
+            <a id="home" href="/home_page.html">Home</a>
+            <a id="about" href="/about.html">About</a>
+            <a id="projects" href="/projects.html">Projects</a>
+            <a id="extra" href="/extras.html">Extras</a>
+            <div class="middle"></div>
+            <span>
+                <a id="gh" href=https://github.com/q231508><img src="/assets/GitHub_Invertocat_White_Clearspace.png" style="width: 40px;height: 40px"></a>
+                <a id="ln" href=https://www.linkedin.com/in/lumbani-zimba-ba01232a7><img src="/assets/InBug-White.png" style="width: 40px;height: 40px"></a>
+                <a id="x" href=https://x.com/q231508><img src="/assets/logo-white.png" style="width: 40px;height: 40px"></a>
+
+            </span>
+        </nav>
+    
+        <p hidden id="whoami"> 
+            <span style="color: rgb(211, 113, 47);">LZ@LAPTOP</span><span style="color: rgba(240, 255, 255, 0.793)">:</span><span style="color: cadetblue;">/mnt/c/Users/p1/</span><span style="color: rgba(240, 255, 255, 0.793)">$ </span>
+            whoami<br>
+            <span hidden id="name" >Lumbani Zimba</span>
+        </p> 
+        
+        <p hidden id="ls"> 
+            <span style="color: rgb(211, 113, 47);">LZ@LAPTOP</span><span style="color: rgba(240, 255, 255, 0.793)">:</span><span style="color: cadetblue;">/mnt/c/Users/p1/</span><span style="color: rgba(240, 255, 255, 0.793)">$ </span>
+            ls<br>
+            <span hidden id="lsRes"  style="color: rgb(211, 113, 47);"">
+                <b>education.txt certificates.txt bio.txt links.md</b>
+            </span>
+        </p> 
+
+        <p hidden id="catLinks"> 
+            <span style="color: rgb(211, 113, 47);">LZ@LAPTOP</span><span style="color: rgba(240, 255, 255, 0.793)">:</span><span style="color: cadetblue;">/mnt/c/Users/p1/</span><span style="color: rgba(240, 255, 255, 0.793)">$ </span>
+            cat links.md<br>
+            <span hidden id="links">
+                [Github]<a style="color: rgba(240, 255, 255, 0.793);" href=https://github.com/q231508>(https://github.com/q231508)</a><br>
+
+                [Linkedin]<a style="color: rgba(240, 255, 255, 0.793);" href=https://www.linkedin.com/in/lumbani-zimba-ba01232a7>(https://www.linkedin.com/in/lumbani-zimba-ba01232a7)</a><br>
+
+                [Twitter]<a style="color: rgba(240, 255, 255, 0.793);" href=https://www.x.com/q231508>(https://www.x.com/q231508)</a>
+            </span>
+        </p> 
+
+        <p hidden id="catEducation"> 
+            <span style="color: rgb(211, 113, 47);">LZ@LAPTOP</span><span style="color: rgba(240, 255, 255, 0.793)">:</span><span style="color: cadetblue;">/mnt/c/Users/p1/</span><span style="color: rgba(240, 255, 255, 0.793)">$ </span>
+            cat education.txt<br>
+            <span hidden id="education">
+                University of Alberta: Bachelor of Science <b>// 2022 - 2026</b><br>
+                Computing Science<br>
+                Mathematics Minor
+            </span>
+        </p> 
+        <p hidden id="catBio"> 
+            <span style="color: rgb(211, 113, 47);">LZ@LAPTOP</span><span style="color: rgba(240, 255, 255, 0.793)">:</span><span style="color: cadetblue;">/mnt/c/Users/p1/</span><span style="color: rgba(240, 255, 255, 0.793)">$ </span>
+            cat bio.txt<br>
+            <span hidden id="bio">
+                Hello! My name is Lumbani Zimba. I'm a new grad* from the University of Alberta. <br>
+                My current interests are cybersecurity, machine learning, software developement, and computer networks.<br>
+                I'm always looking for a chance to learn, and constantly jump at the opportunity to build and share things. <br>
+                My recent obsession has been HTML files. I find their modularity both simple and fascinating. <br>
+                I enjoy reading, drawing, biking, games, competition, sweets, exercise, and sports. <br>
+                #GoSharks
+            </span>
+        </p> 
+
+        <p hidden id="catCertificates"> 
+            <span style="color: rgb(211, 113, 47);">LZ@LAPTOP</span><span style="color: rgba(240, 255, 255, 0.793)">:</span><span style="color: cadetblue;">/mnt/c/Users/p1/</span><span style="color: rgba(240, 255, 255, 0.793)">$ </span>
+            cat certificates.txt<br>
+            <span hidden id="certificates">
+                ISC2 Certified in Cybersecurity <b>// 2025</b><br>
+                CCubed Level-up Hands-on Cyber Security Bootcamp <b>// 2025</b><br>
+                Google Data Analytics Professional Certificate <b>// 2025</b>
+            </span>
+        </p> 
+
+        <p hidden id="lsHidden"> 
+            <span style="color: rgb(211, 113, 47);">LZ@LAPTOP</span><span style="color: rgba(240, 255, 255, 0.793)">:</span><span style="color: cadetblue;">/mnt/c/Users/p1/</span><span style="color: rgba(240, 255, 255, 0.793)">$ </span>
+            ls -a<br>
+            <span hidden id="asterisk" style="color: rgb(211, 113, 47);"">
+                <b>. .. .asterisk.py education.txt certificates.txt bio.txt links.md</b>
+            </span>  
+        </p> 
+
+        <p hidden id="runAsterisk"> 
+            <span style="color: rgb(211, 113, 47);">LZ@LAPTOP</span><span style="color: rgba(240, 255, 255, 0.793)">:</span><span style="color: cadetblue;">/mnt/c/Users/p1/</span><span style="color: rgba(240, 255, 255, 0.793)">$ </span>
+            python3 .asterisk.py<br>
+        </p>       
+
+        <section  hidden id="cd">
+            <header>
+                <h2 id="cdText" style="text-align: center;">*Countdown until graduation</h2>
+            </header>
+                <input hidden type="datetime-local" id="cdDateTime" value="2026-06-17T10:00">
+                <div id="countdown" style="text-align: center; color: rgba(240, 255, 255, 0.793)"></div>
+        </section>
+        <div style="text-align: center;">
+        </div>
+
+    </body>
+    <script>
+        class Ticker {
+            static instance = null;
+
+            constructor() {
+                if (Ticker.instance) {
+                    // If an instance already exists, return it
+                    return Ticker.instance;
+                }
+
+                // Initialize properties
+                this.ticked = false;
+                this.observers = [];
+
+                Ticker.instance = this;
+            }            
+
+            addObserver(observer) {
+                this.observers.push(observer);
+            }
+
+            notify() {
+                this.observers.forEach(observer => observer(this.ticked));
+            }
+
+            updateTick() {
+                this.ticked = true;
+                this.notify();
+                this.ticked = false;
+                 // alert all observers
+                setTimeout(this.updateTick.bind(this), 1000);
+            }
+
+        }
+
+        class Countdown {
+            constructor(){
+                this.running = false;
+                this.start = this.start.bind(this);
+                this.passed = false;
+                this.current = 0;
+                this.target = 0;
+                this.years = 0;
+                this.months = 0;
+                this.days = 0;
+                this.hours = 0;
+                this.minutes = 0;
+                this.seconds = 0;
+            }
+
+            observe(Ticker){
+                Ticker.addObserver(this.update.bind(this));
+            }
+
+            start(){
+                this.running = true;
+                this.target = new Date(document.getElementById("cdDateTime").value);
+                this.current = new Date();
+                if (this.target < this.current){
+                    this.passed = true;
+                }
+                else{
+                    this.passed = false;
+                }
+                this.setup();
+            }
+
+            setup(){
+                if (!this.passed){
+                    this.seconds = 60 - (this.current).getSeconds();
+                    this.minutes = (this.target).getMinutes() - (this.current).getMinutes() - 1;
+                    this.hours = (this.target).getHours() - (this.current).getHours();
+                    this.days = (this.target).getDate() - (this.current).getDate();
+                    this.months = (this.target).getMonth() - (this.current).getMonth();
+                    this.years = (this.target).getFullYear() - (this.current).getFullYear();
+                }
+                else{
+                    this.seconds = (this.current).getSeconds() - (this.target).getSeconds();
+                    this.minutes = (this.current).getMinutes() - (this.target).getMinutes();
+                    this.hours = (this.current).getHours() - (this.target).getHours();
+                    this.days = (this.current).getDate() - (this.target).getDate();
+                    this.months = (this.current).getMonth() - (this.target).getMonth();
+                    this.years = (this.current).getFullYear() - (this.target).getFullYear();
+                
+                }
+                this.calculate();
+            }
+
+            calculate(){
+                if (!this.passed){
+                    if (this.seconds < 0){
+                        this.minutes--;
+                        this.seconds += 60;
+                    }
+
+                    if (this.minutes < 0){
+                        this.hours--;
+                        this.minutes += 60;
+                    }
+
+                    if (this.hours < 0){
+                        this.days--;
+                        this.hours += 24;
+                    }
+
+                    if (this.days < 0){
+                        this.months--;
+                        const prevMonth = new Date(this.target.getFullYear(), this.target.getMonth(), 0);
+                        this.days += prevMonth.getDate();                    
+                    }
+
+                    if (this.months < 0){
+                        this.years--;
+                        this.months += 12;
+                    }
+                
+                    if (this.years < 0){
+                        this.passed = true;
+                        this.years = 0;
+                        this.months = 0;
+                        this.days = 0;
+                        this.hours = 0;
+                        this.minutes = 0;
+                        this.seconds = 1;
+                    }
+                }
+                else{
+
+                    if (this.seconds < 0) {
+                        this.minutes--;
+                        this.seconds += 60;
+                    }
+                    if (this.seconds >= 60) {
+                        this.minutes++;
+                        this.seconds -= 60;
+                    }
+
+                    if (this.minutes < 0) {
+                        this.hours--;
+                        this.minutes += 60;
+                    }
+                    if (this.minutes >= 60) {
+                        this.hours++;
+                        this.minutes -= 60;
+                    }
+                    
+
+                    if (this.hours < 0) {
+                        this.days--;
+                        this.hours += 24;
+                    }
+
+                    if (this.hours >= 24) {
+                        this.days++;
+                        this.hours -= 24;
+                    }
+
+                    if (this.days < 0) {
+                        this.months--;
+                        const daysInPrevMonth =
+                            new Date(this.current.getFullYear(), this.current.getMonth(), 0).getDate();
+                        this.days += daysInPrevMonth;
+                    }
+                    if (this.days >= new Date(this.current.getFullYear(), this.current.getMonth() + 1, 0).getDate()) {
+                        this.months++;
+                        this.days -= new Date(this.current.getFullYear(), this.current.getMonth() + 1, 0).getDate();
+                    }
+
+                    if (this.months < 0) {
+                        this.years--;
+                        this.months += 12;
+                    }
+                    if (this.months >= 12) {
+                        this.years++;
+                        this.months -= 12;
+                    }
+                }
+
+            }
+
+            display(){
+                if (!this.passed){
+                    document.getElementById("countdown").innerHTML = `${String(this.years)} Years
+                    ${String(this.months)} Months ${String(this.days)} Days ${String(this.hours)} Hours 
+                    ${String(this.minutes)} Minutes ${String(this.seconds)} Seconds remaining`;
+                }
+                else{
+                    document.getElementById("cdText").innerText = "*Officially Graduated"
+                    document.getElementById("countdown").innerHTML = `${String(this.years)} Years
+                    ${String(this.months)} Months ${String(this.days)} Days ${String(this.hours)} Hours 
+                    ${String(this.minutes)} Minutes ${String(this.seconds)} Seconds ago`;
+                }
+            }
+
+            update(Ticked){
+                this.ticked = Ticked;
+                //Ticker.updateTick.bind(Ticker);
+                if (this.ticked){
+                    if (this.running) {
+                        if(!this.passed){
+                            this.seconds--;
+                            this.calculate();
+                            this.display();
+                        }
+                        else{
+                            this.seconds++;
+                            this.calculate();
+                            this.display();
+                        }
+                    }
+                }
+                this.ticked = false;
+            }
+        }
+
+        function typeCommand(id_name, p, delay, first=null){
+            let offset = delay;
+            const id = id_name;
+            const para = p;
+            let done = false;
+            let idx = 0; 
+            let animTime = 0;
+        
+            line = document.querySelector(id);
+        
+            for (const node of line.childNodes) {
+                
+                if (node.nodeType === Node.TEXT_NODE) {
+                    
+                    let text = node.textContent.trim();
+                    let sz = text.length+1;
+                    if (text) {
+                        text = "!" + text;
+                        const firstBr = line.querySelector("br");
+                        if (firstBr){
+                            firstBr.remove();
+                        }
+                    
+                        
+                        console.log(text, sz, idx);
+                    
+                        line.hidden=false;
+                        node.textContent = "";
+                        
+                        text.split("").forEach((char, i) => {
+                            
+                            const span = document.createElement("span");
+                            span.textContent = char;
+                            if(span.textContent == " "){
+                                span.style.width = "5px";
+                            }
+                            if(span.textContent == "!"){
+                                span.textContent = "";
+                            }
+                            span.style.opacity = 0;
+                            span.style.display = "inline-block";
+                            span.style.animation = `txtLikePopIn 0.01s forwards`;
+                            span.style.animationDelay = `${i * .081}s`;
+                            
+                            line.appendChild(span);
+                            idx ++ ;
+                            animTime += i*.081;
+                        });
+                        console.log(text, sz, idx);
+                        if(idx === sz){
+                                                                console.log(idx);
+
+                            if(para){
+                                setTimeout(() =>{
+                                    line.appendChild(document.createElement("br"));
+                                    text = document.getElementById(para);
+                                    let p = text;
+                                    p.hidden=false;
+                                    line.appendChild(p);
+                                    line.appendChild(document.createElement("br"));
+ 
+                                }, animTime*100 + 500);
+                            }
+                            else{
+                                setTimeout(() =>{
+                                    
+                                    text = document.getElementById("cd");
+                                    text.hidden = false;
+ 
+                                }, animTime*100 + 300);
+                            }
+                           
+                        }
+                        offset = animTime*100 + 1100;
+                        
+
+
+                    }
+                    
+                }
+                
+            }
+            return offset;
+            
+        }
+
+        let delay = ms => new Promise(res => setTimeout(res, ms));
+
+        async function runCommands(commands) {
+            let offset = 0;
+            for (let p of commands) {
+                let id = "#" + p.id;
+                let para = "";
+
+                p.querySelectorAll("span").forEach(span => {
+                if (span.id) {
+                    para = span.id;
+                }
+                });
+
+                console.log(offset, 909090909090);
+
+                offset = typeCommand(id, para, offset); 
+                await delay(offset); 
+            }
+        }
+        function main(){
+            const ticker = new Ticker();
+            const countdown = new Countdown();
+            let offset = 0;
+            countdown.start();
+
+            document.querySelectorAll("#home,#about,#projects,#extra").forEach(link => {
+                link.addEventListener("mouseover", () =>{
+                    link.style.backgroundColor= "aliceblue";
+                    link.style.color="black";
+                });
+                link.addEventListener("mouseleave", () => {
+                    link.style.backgroundColor= "";
+                    link.style.color="#e0bb72";
+                });
+            });
+
+            countdown.observe(ticker);
+            ticker.updateTick();
+                        console.log(offset);
+
+            let commands = document.querySelectorAll("p");
+
+            
+
+            const played = sessionStorage.getItem("played");
+
+            if (played === "true") {
+                document.querySelectorAll("p, span, section, br").forEach(el => {
+                    el.hidden = false;
+                });
+            } else {
+                setTimeout(() => runCommands(commands), 500);
+                sessionStorage.setItem("played", "true");
+            }
+        }
+
+        window.addEventListener("load", main);
+    </script>
+</html>
