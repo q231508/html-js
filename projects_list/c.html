@@ -19,15 +19,15 @@
     </p>
     <h2>File System Simulator [<span id="c">C</span>]</h2>
     <p>
-    A simulated file system implemented in C, built on top of a binary disk image with a superblock, inode table, and free block list.<br>
+    A UNIX like simulated file system implemented in C, built on top of a binary disk image with a superblock, inode table, and free block list.<br>
     I implemented the full suite of file system operations: mounting with six consistency checks, <br>
     file and directory creation, recursive deletion, block-level read and write, directory listing, cd navigation, and defragmentation.<br>
     This includes bit-level inode parsing for flags like in-use, directory, parent index, and file size,<br>
     as well as contiguous block allocation, free-space tracking, and compaction that shifts files toward the start of the disk to eliminate fragmentation.<br>
     </p>
-    <h2>Shell Terminal Simulator [<span id="c">C</span>]</h2>
+    <h2>Interactive Linux Shell [<span id="c">C</span>]</h2>
     <p>
-    A Unix shell implementation in C supporting command execution, background processes, I/O redirection, and single pipes.<br>
+    A Linux shell implementation in C supporting command execution, background processes, I/O redirection, and single pipes.<br>
     I built the full shell loop including tokenization, fork/exec process management, a linked list job tracker, <br>
     and signal handling for SIGCHLD, SIGINT, and SIGTSTP to correctly manage foreground and background process lifecycles.<br>
     This includes built-in commands (cd, pwd, jobs, exit), stdin/stdout redirection with file descriptor duplication, <br>
