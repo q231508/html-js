@@ -16,7 +16,7 @@
         left: 50%;
         transform: translateX(-50%);
         }
-        nav #home, #about, #projects, #extra {
+        nav #home, #Schedule, #projects, #writeups, #extra {
             margin-right: auto;
             text-align: center;
             border-top: 2px rgb(173, 173, 173) solid;
@@ -60,20 +60,19 @@
             text-decoration: underline;
         }
 
-
-
     </style>
     <body >
         <nav>
             <a id="home" href="./home_page.html">Home</a>
-            <a id="about" href="./about.html">About</a>
             <a id="projects" href="./projects.html">Projects</a>
+            <a id="Schedule" href="./schedule.html">Schedule</a>
+            <a id="writeups" href="./writeups.html">Write Ups</a>
             <a id="extra" href="./extras.html">Extras</a>
             <div class="middle"></div>
             <span>
-                <a id="gh" href=https://github.com/q231508><img src="/assets/GitHub_Invertocat_White_Clearspace.png" style="width: 40px;height: 40px"></a>
-                <a id="ln" href=https://www.linkedin.com/in/lumbani-zimba-ba01232a7><img src="/assets/InBug-White.png" style="width: 40px;height: 40px"></a>
-                <a id="x" href=https://x.com/q231508><img src="/assets/logo-white.png" style="width: 40px;height: 40px"></a>
+                <a id="gh" href=https://github.com/q231508><img src="./assets/GitHub_Invertocat_White_Clearspace.png" style="width: 40px;height: 40px"></a>
+                <a id="ln" href=https://www.linkedin.com/in/lumbani-zimba-ba01232a7><img src="./assets/InBug-White.png" style="width: 40px;height: 40px"></a>
+                <a id="x" href=https://x.com/qwoh2x><img src="./assets/logo-white.png" style="width: 40px;height: 40px"></a>
 
             </span>
         </nav>
@@ -96,11 +95,12 @@
             <span style="color: rgb(211, 113, 47);">LZ@LAPTOP</span><span style="color: rgba(240, 255, 255, 0.793)">:</span><span style="color: cadetblue;">/mnt/c/Users/p1/</span><span style="color: rgba(240, 255, 255, 0.793)">$ </span>
             cat links.md<br>
             <span hidden id="links">
+                [Email]<a style="color: rgba(240, 255, 255, 0.793);" href="mailto:lumbaniz1@gmail.com">(lumbaniz1@gmail.com)</a><br><br>
                 [Github]<a style="color: rgba(240, 255, 255, 0.793);" href=https://github.com/q231508>(https://github.com/q231508)</a><br>
 
                 [Linkedin]<a style="color: rgba(240, 255, 255, 0.793);" href=https://www.linkedin.com/in/lumbani-zimba-ba01232a7>(https://www.linkedin.com/in/lumbani-zimba-ba01232a7)</a><br>
 
-                [Twitter]<a style="color: rgba(240, 255, 255, 0.793);" href=https://www.x.com/q231508>(https://www.x.com/q231508)</a>
+                [Twitter]<a style="color: rgba(240, 255, 255, 0.793);" href=https://www.x.com/qwoh2x>(https://www.x.com/qwoh2x)</a>
             </span>
         </p> 
 
@@ -118,10 +118,10 @@
             cat bio.txt<br>
             <span hidden id="bio">
                 Hello! My name is Lumbani Zimba. I'm a new grad* from the University of Alberta. <br>
-                My current interests are cybersecurity, machine learning, software developement, and computer networks.<br>
-                I'm always looking for a chance to learn, and constantly jump at the opportunity to build and share things. <br>
-                My recent obsession has been HTML files. I find their modularity both simple and fascinating. <br>
-                I enjoy reading, drawing, biking, games, competition, sweets, exercise, and sports. <br>
+                My interests include cybersecurity, machine learning, software development, and computer networks.<br>
+                I enjoy building practical projects and continuously learning new technologies. <br>
+                Lately, I've been especially interested in working with HTML and exploring how the simple, modular structure can create flexible and engaging designs. <br>
+                Outside of tech, I enjoy reading, drawing, biking, games, and staying active. <br>
                 #GoSharks
             </span>
         </p> 
@@ -487,7 +487,7 @@
             let offset = 0;
             countdown.start();
 
-            document.querySelectorAll("#home,#about,#projects,#extra").forEach(link => {
+            document.querySelectorAll("#home,#Schedule,#projects,#writeups,#extra").forEach(link => {
                 link.addEventListener("mouseover", () =>{
                     link.style.backgroundColor= "aliceblue";
                     link.style.color="black";

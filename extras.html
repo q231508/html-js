@@ -16,7 +16,7 @@
         left: 50%;
         transform: translateX(-50%);
         }
-        nav #home, #about, #projects, #extra {
+        nav #home, #Schedule, #projects, #writeups, #extra {
             margin-right: auto;
             text-align: center;
             border-top: 2px rgb(173, 173, 173) solid;
@@ -63,14 +63,15 @@
     <body >
         <nav>
             <a id="home" href="./home_page.html">Home</a>
-            <a id="about" href="./about.html">About</a>
             <a id="projects" href="./projects.html">Projects</a>
+            <a id="Schedule" href="./schedule.html">Schedule</a>
+            <a id="writeups" href="./writeups.html">Write Ups</a>
             <a id="extra" href="./extras.html">Extras</a>
             <div class="middle"></div>
             <span>
-                <a id="gh" href=https://github.com/q231508><img src="/assets/GitHub_Invertocat_White_Clearspace.png" style="width: 40px;height: 40px"></a>
-                <a id="ln" href=https://www.linkedin.com/in/lumbani-zimba-ba01232a7><img src="/assets/InBug-White.png" style="width: 40px;height: 40px"></a>
-                <a id="x" href=https://x.com/q231508><img src="/assets/logo-white.png" style="width: 40px;height: 40px"></a>
+                <a id="gh" href=https://github.com/q231508><img src="./assets/GitHub_Invertocat_White_Clearspace.png" style="width: 40px;height: 40px"></a>
+                <a id="ln" href=https://www.linkedin.com/in/lumbani-zimba-ba01232a7><img src="./assets/InBug-White.png" style="width: 40px;height: 40px"></a>
+                <a id="x" href=https://x.com/qwoh2x><img src="./assets/logo-white.png" style="width: 40px;height: 40px"></a>
 
             </span>
         </nav>
@@ -128,7 +129,7 @@
         }
 
         function main(){
-            document.querySelectorAll("#home,#about,#projects,#extra").forEach(link => {
+            document.querySelectorAll("#home,#Schedule,#projects,#writeups,#extra").forEach(link => {
                 link.addEventListener("mouseover", () =>{
                     link.style.backgroundColor= "aliceblue";
                     link.style.color="black";

@@ -77,71 +77,14 @@
         </nav>
         
         <div id="welcomeText">
-            <h1>Projects</h1>
+            <h1>[...Under Construction...]</h1>
             
             <p>
-                Welcome to the projects page!<br>
-                <br>Below is a list consisting of personal and academic projects I've contributed to.<br>
-
-                Projects have been filtered based on programming language. <br>
-                The dropdown menu will allow you to select for projects that use the specified language. <br><br>
-                Each listing below contains a brief description of the project and my contributions. <br>
-                Some projects will feature writeups in which I go into further detail of the project. <br>
-                These writeups include images, gifs, and videos of the project in action <br>
-
-                <br> Due to university policy, some projects are not public. Please <a style="color: #e0bb72;" href="mailto:lumbaniz1@gmail.com">email</a> for details. <br>
-
-
-                
+                ...check back later...
             </p> 
-            
-        </div>
-
-        <h2>
-            Select a language:
-        </h2>
-        <select id="language">
-            <option value="default" selected="selected">Select All</option>
-            <option value="python.html">Python</option>
-            <option value="c.html">C</option>
-            <option value="cpp.html">C++</option>
-            <option value="java.html">Java</option>
-            <option value="html-js-css.html">HTML JS CSS</option>
-            <option value="assembly.html">Assembly</option>
-        </select>
-        <div id="project"><p></p></div>
-
-
 
     </body>
     <script>
-        function showProjects(){
-            console.log("hah");
-
-            let file = document.getElementById("language").value;;
-            let project = document.getElementById("project");
-            let directory = "./projects_list/";
-            console.log(file);
-            if(file == "default"){
-                project.innerHTML = "";
-                let languages = new Array("python.html", "c.html", "cpp.html", "java.html", "html-js-css.html", "assembly.html");
-                for(language of languages){
-                    fetch(directory+language) 
-                        .then(response => response.text())
-                        .then(html => {
-                            project.innerHTML += html;
-                    });
-                }
-            }
-            else{
-                fetch(directory+file)  
-                    .then(response => response.text())
-                    .then(html => {
-                        project.innerHTML = html;
-                });
-            }
-        }
-
         function main(){
             document.querySelectorAll("#home,#Schedule,#projects,#writeups,#extra").forEach(link => {
                 link.addEventListener("mouseover", () =>{
@@ -153,8 +96,6 @@
                     link.style.color="#e0bb72";
                 });
             });            
-            showProjects();
-            document.getElementById("language").addEventListener("input", showProjects);
         }
 
         window.addEventListener("load", main);

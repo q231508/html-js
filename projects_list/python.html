@@ -1,0 +1,65 @@
+<style>
+    #c { color: #b5a1a1; }
+    #cpp { color: #f34b7d; }
+    #python { color: #3572A5; }
+    #java { color: #b67d2d; }
+    #html { color: #e34c26; }
+    #css { color: #a47ae2; }
+    #js { color: #f1e05a; }
+    #assembly { color: #8a5c26; }
+    #androidStudio { color: rgb(75, 188, 105);}
+</style>
+<div class="pythonProjects">
+    <h2>Distributed Social Network 
+        [<span id="python">Python</span>]
+        [<span id="html">HTML</span>] 
+        [<span id="css">CSS</span>] 
+        [<span id="js">JS</span>]</h2>
+    <p>
+    A distributed social media platform where users across multiple nodes can share posts, likes, and comments through an inbox-based system.<br>
+    Developed in a group of 5, I implemented the full entry and image hosting system across the frontend, backend, and REST API. <br>
+    This includes post creation, editing, deletion, visibility controls (public, unlisted, friends-only), importing github activity, and cross-node content delivery.<br>
+    Coordinated integration, testing, and debugging with multiple 3 external teams to ensure compatibility between independently developed nodes.<br>
+
+    [<a style="color: #e0bb72;" href="../write_ups/distributed_social_network.html">Write Up</a>]
+    </p>
+
+    <h2>Wordle Solver [<span id="python">Python</span>]</h2>
+
+    <p>
+    A Wordle-solving project that uses a probabilistic model and heuristic search to guess five-letter words within six attempts.<br>
+    I built the full system including game state representation, word bank generation, and a constraint-based search algorithm that narrows the candidate pool using green, yellow, and grey letter feedback.<br>
+    This includes a bootstrapping training loop, a probability table model that reinforces successful guess paths, and a configurable exploit threshold that balances exploration and exploitation across 1,000 words.<br>
+    Performance results are visualized through scatter and bar charts tracking solve rates and average guess counts across varying strategy configurations.<br>
+
+        [<a style="color: #e0bb72;" href="../write_ups/wordle_solver.html">Write Up</a>]
+    </p>
+
+    <h2>Retailer Review Organizer [<span id="python">Python</span>]</h2>
+    <p>
+    A 3 person group project where we developed a MongoDB-backed product review database system for querying and analyzing large datasets of customer reviews.<br>
+    We built the data usage pipeline and the full query interface consisting of batch loading of JSON review data into MongoDB and an interactive CLI for running aggregation queries.<br>
+    This includes average product ratings, top-N ranked products, most active reviewers, review volume over time, and a suspicious review flagging system based on helpfulness ratios.<br>
+    </p>
+
+    <h2>CLI Social Media Simulator [<span id="python">Python</span>]</h2>
+    <p>
+    A 3 person group project where we developed a Twitter-like social platform backed by SQLite, supporting tweets, follows, retweets, replies, and user-curated favorite lists.<br>
+    I developed the login, registration, and home screen systems, as well as the main command loop that ties all features together into a cohesive CLI application.<br>
+    This includes session management, menu-driven navigation, and integrating independently developed modules — tweet composition, user search, follower management, and hashtag support — into a unified flow.<br>
+    </p>
+    <h2>Animated Taskbar Icons [<span id="python">Python</span>]</h2>
+    <p>
+    A Windows system tray application that animates any GIF or image file as a live taskbar icon.<br>
+    Built with Python using Pystray, Pillow, and Tkinter, the app processes each frame of a selected file, resizes it to fit the tray, and plays it back at 48 FPS on a dedicated thread.<br>
+    This includes tray menu controls for run, stop, restart, and live file swapping, as well as frame-by-frame processing with progress feedback and error handling for invalid files.<br>
+    [<a style="color: #e0bb72;" href="https://github.com/q231508/animated-taskbar-icons/tree/main">Github</a>]
+    </p>
+    <h2>Miscellaneous Cryptographic Tools [<span id="python">Python</span>]</h2>
+    <p>
+    A suite of cryptographic implementations and attacks built across a security course.<br>
+    This includes Shamir's Secret Sharing with polynomial-based share generation and Lagrange interpolation recovery,<br>
+    a full Paillier cryptosystem supporting homomorphic evaluation of encrypted polynomials without exposing plaintext coefficients,<br>
+    and Pollard's p-1 algorithm to factor an RSA modulus and recover the private key.<br>
+    </p>
+</div>

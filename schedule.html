@@ -57,7 +57,16 @@
             text-decoration: underline;
         }
 
-
+        #c { color: #b5a1a1; }
+        #cpp { color: #f34b7d; }
+        #python { color: #3572A5; }
+        #java { color: #b67d2d; }
+        #html { color: #e34c26; }
+        #css { color: #a47ae2; }
+        #js { color: #f1e05a; }
+        #assembly { color: #8a5c26; }
+        #androidStudio { color: rgb(75, 188, 105);}
+        h3 { color: rgb(175, 186, 195);}
 
     </style>
     <body >
@@ -77,71 +86,21 @@
         </nav>
         
         <div id="welcomeText">
-            <h1>Projects</h1>
+            <h1>Schedule</h1>
             
             <p>
-                Welcome to the projects page!<br>
-                <br>Below is a list consisting of personal and academic projects I've contributed to.<br>
-
-                Projects have been filtered based on programming language. <br>
-                The dropdown menu will allow you to select for projects that use the specified language. <br><br>
-                Each listing below contains a brief description of the project and my contributions. <br>
-                Some projects will feature writeups in which I go into further detail of the project. <br>
-                These writeups include images, gifs, and videos of the project in action <br>
-
-                <br> Due to university policy, some projects are not public. Please <a style="color: #e0bb72;" href="mailto:lumbaniz1@gmail.com">email</a> for details. <br>
-
-
-                
+                Sneak peak at future projects, site updates, and other things I'm planning on working on!
             </p> 
-            
-        </div>
 
-        <h2>
-            Select a language:
-        </h2>
-        <select id="language">
-            <option value="default" selected="selected">Select All</option>
-            <option value="python.html">Python</option>
-            <option value="c.html">C</option>
-            <option value="cpp.html">C++</option>
-            <option value="java.html">Java</option>
-            <option value="html-js-css.html">HTML JS CSS</option>
-            <option value="assembly.html">Assembly</option>
-        </select>
-        <div id="project"><p></p></div>
-
-
+            <h2>Upcoming Projects:</h2>
+            <h3>D-Link DIR-822 Router Malicious Forwarding </h3>
+            <h3>Delete Tabs to the Left Chrome Extension </h3>
+            <h3>Encrypted File System Simulator </h3>
+            <h2>Upcoming Write Ups:</h2>
+            <h3>Distributed Social Network </h3>
 
     </body>
     <script>
-        function showProjects(){
-            console.log("hah");
-
-            let file = document.getElementById("language").value;;
-            let project = document.getElementById("project");
-            let directory = "./projects_list/";
-            console.log(file);
-            if(file == "default"){
-                project.innerHTML = "";
-                let languages = new Array("python.html", "c.html", "cpp.html", "java.html", "html-js-css.html", "assembly.html");
-                for(language of languages){
-                    fetch(directory+language) 
-                        .then(response => response.text())
-                        .then(html => {
-                            project.innerHTML += html;
-                    });
-                }
-            }
-            else{
-                fetch(directory+file)  
-                    .then(response => response.text())
-                    .then(html => {
-                        project.innerHTML = html;
-                });
-            }
-        }
-
         function main(){
             document.querySelectorAll("#home,#Schedule,#projects,#writeups,#extra").forEach(link => {
                 link.addEventListener("mouseover", () =>{
@@ -153,8 +112,6 @@
                     link.style.color="#e0bb72";
                 });
             });            
-            showProjects();
-            document.getElementById("language").addEventListener("input", showProjects);
         }
 
         window.addEventListener("load", main);

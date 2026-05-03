@@ -1,0 +1,103 @@
+writeups.html<!DOCTYPE html>
+<html>
+    <style>
+        body {
+            background-color: #2b2b28;
+            font-family: Arial, sans-serif;
+            color: #e0bb72;
+        }
+        nav {
+            display: flex;
+            align-items: center;
+            
+        }
+        .middle {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        }
+        nav #home, #about, #projects, #writeups, #extra {
+            margin-right: auto;
+            text-align: center;
+            border-top: 2px rgb(173, 173, 173) solid;
+            border-left: 2px rgb(173, 173, 173) solid;
+            padding: 10px;    
+            color: #e0bb72;
+        }
+        nav #gh, #ln, #x{
+            margin-left: auto;
+
+        }
+        @keyframes myAnimation {
+            from {
+                opacity: 0;
+                transform: translateY(20px); 
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        body {
+            animation: myAnimation .5s;
+        }
+        p {
+            color: rgba(240, 255, 255, 0.793);
+            margin: 0;
+            line-height: 1.2;
+        }
+        p + p {
+            margin-top: 4px;
+        }
+        a {
+        text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+
+
+    </style>
+    <body >
+        <nav>
+            <a id="home" href="./home_page.html">Home</a>
+            <a id="about" href="./about.html">About</a>
+            <a id="projects" href="./projects.html">Projects</a>
+            <a id="writeups" href="./writeups.html">Write Ups</a>
+            <a id="extra" href="./extras.html">Extras</a>
+            <div class="middle"></div>
+            <span>
+                <a id="gh" href=https://github.com/q231508><img src="./assets/GitHub_Invertocat_White_Clearspace.png" style="width: 40px;height: 40px"></a>
+                <a id="ln" href=https://www.linkedin.com/in/lumbani-zimba-ba01232a7><img src="./assets/InBug-White.png" style="width: 40px;height: 40px"></a>
+                <a id="x" href=https://x.com/q231508><img src="./assets/logo-white.png" style="width: 40px;height: 40px"></a>
+
+            </span>
+        </nav>
+        
+        <div id="welcomeText">
+            <h1>[...Under Construction...]</h1>
+            
+            <p>
+                ...check back later...
+            </p> 
+
+    </body>
+    <script>
+        function main(){
+            document.querySelectorAll("#home,#about,#projects,#writeups,#extra").forEach(link => {
+                link.addEventListener("mouseover", () =>{
+                    link.style.backgroundColor= "aliceblue";
+                    link.style.color="black";
+                });
+                link.addEventListener("mouseleave", () => {
+                    link.style.backgroundColor= "";
+                    link.style.color="#e0bb72";
+                });
+            });            
+        }
+
+        window.addEventListener("load", main);
+    </script>
+</html>
