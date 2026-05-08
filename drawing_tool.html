@@ -8,10 +8,7 @@
                 }
                 /* From https://jsfiddle.net/CRSVU/ */
                 html, body { height: 100%; padding: 0; margin: 0; }
-                div { width: 50%; 
-                    height: 50%; 
-                    float: left;
-                    outline: 1px solid rgb(0, 0, 0);}
+
                 p {
                     font-weight: bold;
                     padding-left: 5px;
@@ -42,17 +39,27 @@
                     width: 100%;
                     height: 40px;
                 }
-                canvas{
-                    border: 1px solid rgb(0, 0, 0);
-                    padding-left: 0;
-                    padding-right: 0;
-                    margin-left: auto;
+                .canvas-wrapper {
+                    position: relative; 
+                    margin-left: auto;  
                     margin-right: auto;
-                    display: block;
+                }
+
+                .canvas-wrapper canvas {
+                    position: absolute;  
+                    left: 0;
+                    top: 0;
+                    border: 1px solid rgb(0, 0, 0);
                     cursor: crosshair;
                     background-color: white;
-                    
                 }
+
+                #grid {
+                    z-index: 10; /* Higher value = "closer" to the user */
+                    pointer-events: none; 
+                    background-color: #00000000;
+                }
+
                 
             </style>
     </head>
@@ -63,8 +70,8 @@
             <span>
 
                 <h3>
-                    <button id="clear">Clear Canvas</button>
-                    <button id="export">Export PNG</button>
+                    Canvas Size: 
+                    <input type="number" step="1" style="width: 5ch;" id="x">x<input type="number" step="1" style="width: 5ch;" id="y">
                     Color: 
                     <span>                
                         <input type="Color" id="color picker" style="height: 22px;width: 50px">
@@ -88,13 +95,24 @@
                 </h3>
             </span>
         </section>
+        <div class="canvas-wrapper">
+                <canvas id="myCanvas">
+                Your browser does not support the HTML canvas tag.</canvas>
+                <canvas hidden id="grid">Your browser does not support the HTML canvas tag.</canvas>
 
-        <canvas id="myCanvas">
-        Your browser does not support the HTML canvas tag.</canvas>
-
+        </div>
+        
+        <section>
+            <button id="clear">Clear Canvas</button>
+            <button id="export">Export PNG</button>
+            <button id="pixel_mode">Pixel Editor: Off</button>
+            <label for="pixels">Pixelation:</label>
+            <input type="range" id="pixels" name="pixels" min="1" max="10" value="1">
+            <span id="gridSize">1x1 px</span>
+        </section>
     </body>
     <script>
-        function update_pos(drawing, tool){
+        function update_pos(drawing, tool, click, pixel_edit){
             const c = document.getElementById("myCanvas");
             const ctx = c.getContext("2d");
             let size = document.getElementById("brushSize").value;
@@ -108,12 +126,8 @@
 
             }
             else{
-                
                 ctx.fillStyle = 'white';
-                c.style.cursor = "none";
                 document.getElementById("cursor").hidden = false;
-                
-
             }
 
 
@@ -126,44 +140,124 @@
             if (y < 0){ y = 0; }
             if (x < 0){ x = 0; }
 
-            document.getElementById("xpos").innerHTML = `${x}, `;
-            document.getElementById("ypos").innerHTML = `${y}px`;
+            let x_px = 1;
+            let y_px = 1;
+            let canvas_width = c.width;
+            let canvas_height = c.height;
+            let pixel_width = Math.floor(canvas_width / document.getElementById("pixels").value + 1);
+            let pixel_height = Math.floor(canvas_height / document.getElementById("pixels").value + 1);
+
+            let x_spacing = pixel_width;
+            let y_spacing = pixel_height;
+
+            if(!pixel_edit){
+                document.getElementById("xpos").innerHTML = `${x}, `;
+                document.getElementById("ypos").innerHTML = `${y}px`;
+            }
+            else{
+                
+            
+                while(x_spacing < x){
+                    x_spacing+=pixel_width;
+                    x_px+=1;
+                }
+                while(y_spacing < y){
+                    y_spacing+=pixel_height;
+                    y_px+=1;
+                }
+                document.getElementById("xpos").innerHTML = `${x_px}, `;
+                document.getElementById("ypos").innerHTML = `${y_px}px`;
+            }
             document.getElementById("cursor").style.left = `${event.clientX}px`;
             document.getElementById("cursor").style.top = `${event.clientY}px`;
-            if(drawing){
-                ctx.fillRect(x-size/2,y-size/2,size,size);
+            if(drawing || click){
+                if(!pixel_edit){
+                    ctx.fillRect(x-size/2,y-size/2,size,size);
+                }
+                else{
+                    ctx.fillRect(x_spacing-pixel_width,y_spacing-pixel_height,pixel_width,pixel_height);
+                }
+            }
+        }
+
+        function show_grid(){
+            const c = document.getElementById("grid");
+            const ctx = c.getContext('2d');
+
+            let canvas_width = c.width;
+            let canvas_height = c.height;
+            let pixel_width = Math.floor(canvas_width / document.getElementById("pixels").value + 1);
+            let pixel_height = Math.floor(canvas_height / document.getElementById("pixels").value + 1);
+
+            let x = pixel_width;
+            let y = pixel_height;
+        
+            ctx.clearRect(0, 0, c.width, c.height);
+            ctx.fillStyle = "black"
+            while(x < canvas_width){
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, canvas_height);
+
+                ctx.stroke();
+                x+=pixel_width;
+            }
+            while(y < canvas_height){
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(canvas_width, y);
+
+                ctx.stroke();
+                y+=pixel_height;
+            
             }
 
         }
 
-        function main(){
-            let drawing = false;
-            let tool = "pen";
-            document.getElementById("brushType").value = "pen";
+        function resize(c, wrapper, grid, ctx, x, y){
+            wrapper.style.width = x - 100 +"px";
+            wrapper.style.height = y - document.querySelector("section").offsetHeight - 100 +"px";
 
-            const c = document.getElementById("myCanvas");
-            const cursor = document.getElementById("cursor");
+            c.width = wrapper.offsetWidth;
+            c.height = wrapper.offsetHeight;
 
-            document.getElementById("myCanvas").width = window.innerWidth - 100;
-            document.getElementById("myCanvas").height = window.innerHeight - document.querySelector("section").offsetHeight - 100;
-
-                        
-            const ctx = c.getContext('2d');
+            grid.width = c.width
+            grid.height = c.height
 
             ctx.fillStyle = "white"; 
             ctx.fillRect(0, 0, c.width, c.height);
+        }
+        function main(){
+            let drawing = false;
+            let tool = "pen";
+            let click = false;
+            let pixel_edit = false;
+
+            document.getElementById("brushType").value = "pen";
+
+            const c = document.getElementById("myCanvas");
+            const ctx = c.getContext('2d');
+            const cursor = document.getElementById("cursor");
+            const wrapper = document.querySelector(".canvas-wrapper");
+            const grid = document.getElementById("grid");
+            resize(c, wrapper, grid, ctx, (window.innerWidth), (window.innerHeight));
+
 
             document.getElementById("brushType").addEventListener("input", () => {
                 tool = document.getElementById("brushType").value;
             })
-            document.getElementById("myCanvas").addEventListener("mousedown", () => {drawing = true})
-            document.getElementById("myCanvas").addEventListener("mouseup", () => {drawing = false})
+            document.getElementById("myCanvas").addEventListener("mousedown", () => {
+                drawing = true; 
+                click = true; 
+                update_pos(drawing, tool, click, pixel_edit);
+            })
+            document.getElementById("myCanvas").addEventListener("mouseup", () => {drawing = false; click = false;})
             document.getElementById("myCanvas").addEventListener("mousemove", () => {
                 const size = cursor.offsetWidth;
 
                 cursor.style.left = `${event.clientX}px`;
                 cursor.style.top = `${event.clientY}px`;
-                update_pos(drawing, tool);
+                update_pos(drawing, tool, click, pixel_edit);
             });
 
             document.getElementById("export").addEventListener("click", () => {
@@ -173,11 +267,58 @@
                 link.download = 'my-image.png';
                 link.href = dataURL;
                 link.click();
-            })
+            });
             document.getElementById("clear").addEventListener("click", () => {
                 ctx.fillStyle = "white"; 
                 ctx.fillRect(0, 0, c.width, c.height);
-            })
+            });
+            document.getElementById("pixel_mode").addEventListener("click", () => {
+                if(!pixel_edit){
+                    pixel_edit = true;
+                    document.getElementById("pixel_mode").innerHTML = "Pixel Editor: On";
+                    grid.hidden = false;
+                }
+                else{
+                    pixel_edit = false;
+                    document.getElementById("pixel_mode").innerHTML = "Pixel Editor: Off";
+                    grid.hidden = true;
+                }
+            });
+            document.getElementById("pixels").addEventListener("input", () => {
+                document.getElementById("gridSize").innerHTML = `${document.getElementById("pixels").value}x${document.getElementById("pixels").value} px`;
+                show_grid();
+            });
+            
+            let custom_x = document.getElementById("x");
+            let custom_y = document.getElementById("y");
+
+            custom_x.addEventListener("input", () => {
+                custom_x.value = custom_x.value.replace(/[^0-9]/g, "");
+                if(custom_x.value > window.innerWidth - 100){
+                        custom_x.value = window.innerWidth -100;
+                }
+                if(custom_x.value && custom_y.value){
+                    if(custom_x.value > window.innerWidth - 100){
+                        custom_x.value = window.innerWidth -100;
+                        custom_y.value = window.innerHeight - 100;
+                    }
+                    resize(c, wrapper, grid, ctx, (Number(custom_x.value) + 100), (Number(custom_y.value) + document.querySelector("section").offsetHeight + 100))
+                }
+            });
+
+            custom_y.addEventListener("input", () => {
+                custom_y.value = custom_y.value.replace(/[^0-9]/g, "");
+                if(custom_y.value > window.innerHeight - 100){
+                    custom_x.value = window.innerWidth -100;
+                }
+                if(custom_x.value && custom_y.value){
+                    if(custom_y.value > window.innerHeight - 100){
+                        custom_x.value = window.innerWidth -100;
+                        custom_y.value = window.innerHeight - 100;
+                    }
+                    resize(c, wrapper, grid, ctx, (Number(custom_x.value) + 100), (Number(custom_y.value) + document.querySelector("section").offsetHeight + 100))                    
+                }
+            });
         }
 
         window.addEventListener("load", main);
