@@ -50,6 +50,7 @@
                     margin-right: auto;
                     display: block;
                     cursor: crosshair;
+                    background-color: white;
                     
                 }
                 
@@ -60,10 +61,14 @@
 
         <section id="toolBar" >
             <span>
-                <h3>Color: 
+
+                <h3>
+                    <button id="clear">Clear Canvas</button>
+                    <button id="export">Export PNG</button>
+                    Color: 
                     <span>                
                         <input type="Color" id="color picker" style="height: 22px;width: 50px">
-                        Size
+                        Size:
                         <select id="brushSize">
                             <option selected="selected" value=1>1px</option>
                             <option value=2>2px</option>
@@ -73,7 +78,7 @@
                             <option value=32>32px</option>
                             <option value=64>64px</option>
                         </select>
-                        Type
+                        Type:
                         <select id="brushType">
                             <option selected="selected" value="pen">pen</option>
                             <option value="eraser">eraser</option>
@@ -140,16 +145,20 @@
             const c = document.getElementById("myCanvas");
             const cursor = document.getElementById("cursor");
 
-
             document.getElementById("myCanvas").width = window.innerWidth - 100;
             document.getElementById("myCanvas").height = window.innerHeight - document.querySelector("section").offsetHeight - 100;
+
+                        
+            const ctx = c.getContext('2d');
+
+            ctx.fillStyle = "white"; 
+            ctx.fillRect(0, 0, c.width, c.height);
 
             document.getElementById("brushType").addEventListener("input", () => {
                 tool = document.getElementById("brushType").value;
             })
             document.getElementById("myCanvas").addEventListener("mousedown", () => {drawing = true})
             document.getElementById("myCanvas").addEventListener("mouseup", () => {drawing = false})
-
             document.getElementById("myCanvas").addEventListener("mousemove", () => {
                 const size = cursor.offsetWidth;
 
@@ -157,6 +166,19 @@
                 cursor.style.top = `${event.clientY}px`;
                 update_pos(drawing, tool);
             });
+
+            document.getElementById("export").addEventListener("click", () => {
+                const dataURL = c.toDataURL('image/png');
+
+                const link = document.createElement('a');
+                link.download = 'my-image.png';
+                link.href = dataURL;
+                link.click();
+            })
+            document.getElementById("clear").addEventListener("click", () => {
+                ctx.fillStyle = "white"; 
+                ctx.fillRect(0, 0, c.width, c.height);
+            })
         }
 
         window.addEventListener("load", main);
