@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+            <style>
+                * {
+                    cursor: default
+                }
+                /* From https://jsfiddle.net/CRSVU/ */
+                html, body { height: 100%; padding: 0; margin: 0; }
+                div { width: 50%; 
+                    height: 50%; 
+                    float: left;
+                    outline: 1px solid rgb(0, 0, 0);}
+                p {
+                    font-weight: bold;
+                    padding-left: 5px;
+                }
+
+                #cursor { 
+                    position: fixed;
+                    z-index: 90;
+                    color: rgba(255, 255, 255, 0);
+                    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+                    -webkit-user-select: none;
+                    -ms-user-select: none;
+                    user-select: none;
+                    pointer-events: none;
+                    border: 1px solid rgb(0, 0, 0);
+                    transform: translate(-50%, -50%); 
+                    margin: 0;       
+                    padding: 0;       
+                    line-height: 0;   
+                    font-size: 0;    
+                    box-sizing: border-box; 
+                }
+
+                section {
+                    z-index: 1000;
+                    text-align: center;
+                    top: 0;
+                    width: 100%;
+                    height: 40px;
+                }
+                canvas{
+                    border: 1px solid rgb(0, 0, 0);
+                    padding-left: 0;
+                    padding-right: 0;
+                    margin-left: auto;
+                    margin-right: auto;
+                    display: block;
+                    cursor: crosshair;
+                    
+                }
+                
+            </style>
+    </head>
+    <body>
+        <p id="cursor" hidden rea style="color: rgb(255, 255, 255);"></p>
+
+        <section id="toolBar" >
+            <span>
+                <h3>Color: 
+                    <span>                
+                        <input type="Color" id="color picker" style="height: 22px;width: 50px">
+                        Size
+                        <select id="brushSize">
+                            <option selected="selected" value=1>1px</option>
+                            <option value=2>2px</option>
+                            <option value=4>4px</option>
+                            <option value=8>8px</option>
+                            <option value=16>16px</option>
+                            <option value=32>32px</option>
+                            <option value=64>64px</option>
+                        </select>
+                        Type
+                        <select id="brushType">
+                            <option selected="selected" value="pen">pen</option>
+                            <option value="eraser">eraser</option>
+                        </select>
+                        Position:<span id="xpos"></span><span id="ypos"></span>
+                    </span>
+                </h3>
+            </span>
+        </section>
+
+        <canvas id="myCanvas">
+        Your browser does not support the HTML canvas tag.</canvas>
+
+    </body>
+    <script>
+        function update_pos(drawing, tool){
+            const c = document.getElementById("myCanvas");
+            const ctx = c.getContext("2d");
+            let size = document.getElementById("brushSize").value;
+            document.getElementById("cursor").style.width = `${size}px`;
+            document.getElementById("cursor").style.height = `${size}px`;
+            
+            if(tool == "pen"){
+                ctx.fillStyle = document.getElementById("color picker").value;
+                c.style.cursor = "crosshair"
+                document.getElementById("cursor").hidden = false;
+
+            }
+            else{
+                
+                ctx.fillStyle = 'white';
+                c.style.cursor = "none";
+                document.getElementById("cursor").hidden = false;
+                
+
+            }
+
+
+            /* Thanks to https://medium.com/@ryan_forrester_/how-to-get-mouse-position-in-javascript-37e4772a3f21
+                For the simple example
+            */
+            let xOffset = Math.floor((innerWidth - document.getElementById("myCanvas").width)/2);
+            let yOffset = document.querySelector("section").offsetHeight;
+            x = Math.floor(event.clientX + window.scrollX - xOffset);
+            y = Math.floor(event.clientY + window.scrollY - yOffset - 20);
+            if (y < 0){ y = 0; }
+            if (x < 0){ x = 0; }
+
+            document.getElementById("xpos").innerHTML = `${x}, `;
+            document.getElementById("ypos").innerHTML = `${y}px`;
+            document.getElementById("cursor").style.left = `${event.clientX}px`;
+            document.getElementById("cursor").style.top = `${event.clientY}px`;
+            if(drawing){
+                ctx.fillRect(x-size/2,y-size/2,size,size);
+            }
+
+        }
+
+        function main(){
+            let drawing = false;
+            let tool = "pen";
+            document.getElementById("brushType").value = "pen";
+
+            const c = document.getElementById("myCanvas");
+            const cursor = document.getElementById("cursor");
+
+
+            document.getElementById("myCanvas").width = window.innerWidth - 100;
+            document.getElementById("myCanvas").height = window.innerHeight - document.querySelector("section").offsetHeight - 100;
+
+            document.getElementById("brushType").addEventListener("input", () => {
+                tool = document.getElementById("brushType").value;
+            })
+            document.getElementById("myCanvas").addEventListener("mousedown", () => {drawing = true})
+            document.getElementById("myCanvas").addEventListener("mouseup", () => {drawing = false})
+
+            document.getElementById("myCanvas").addEventListener("mousemove", () => {
+                const size = cursor.offsetWidth;
+
+                cursor.style.left = `${event.clientX}px`;
+                cursor.style.top = `${event.clientY}px`;
+                update_pos(drawing, tool);
+            });
+        }
+
+        window.addEventListener("load", main);
+    </script>
+</html>
