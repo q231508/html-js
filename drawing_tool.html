@@ -99,17 +99,25 @@
                 <canvas id="myCanvas">
                 Your browser does not support the HTML canvas tag.</canvas>
                 <canvas hidden id="grid">Your browser does not support the HTML canvas tag.</canvas>
+                <canvas hidden id="censorGrid""></canvas>
 
         </div>
-        
+        <br>
         <section>
             <button id="clear">Clear Canvas</button>
+            <input type="file" id="loadImage" style="width: 12ch;" accept="image/*">
             <button id="export">Export PNG</button>
+            <button id="pixelize">Pixelize Image: Off</button>
             <button id="pixel_mode">Pixel Editor: Off</button>
             <label for="pixels">Pixelation:</label>
-            <input type="range" id="pixels" name="pixels" min="1" max="10" value="1">
+            <input type="range" id="pixels" name="pixels" min="1" max="100" value="1">
             <span id="gridSize">1x1 px</span>
         </section>
+        <section>
+            <button id="undo">Undo</button>
+        </section>
+
+
     </body>
     <script>
         function update_pos(drawing, tool, click, pixel_edit){
@@ -135,8 +143,8 @@
                 For the simple example
             */
             let rect = document.getElementById("myCanvas").getBoundingClientRect();
-            x = Math.floor(event.clientX - rect.left);
-            y = Math.floor(event.clientY - rect.top);
+            let x = Math.floor(event.clientX - rect.left);
+            let y = Math.floor(event.clientY - rect.top);
             if (y < 0){ y = 0; }
             if (x < 0){ x = 0; }
 
@@ -144,8 +152,8 @@
             let y_px = 1;
             let canvas_width = c.width;
             let canvas_height = c.height;
-            let pixel_width = Math.floor(canvas_width / document.getElementById("pixels").value + 1);
-            let pixel_height = Math.floor(canvas_height / document.getElementById("pixels").value + 1);
+            let pixel_width = (canvas_width / document.getElementById("pixels").value );
+            let pixel_height = (canvas_height / document.getElementById("pixels").value );
 
             let x_spacing = pixel_width;
             let y_spacing = pixel_height;
@@ -186,8 +194,8 @@
 
             let canvas_width = c.width;
             let canvas_height = c.height;
-            let pixel_width = Math.floor(canvas_width / document.getElementById("pixels").value + 1);
-            let pixel_height = Math.floor(canvas_height / document.getElementById("pixels").value + 1);
+            let pixel_width = (canvas_width / document.getElementById("pixels").value);
+            let pixel_height = (canvas_height / document.getElementById("pixels").value);
 
             let x = pixel_width;
             let y = pixel_height;
@@ -209,9 +217,7 @@
 
                 ctx.stroke();
                 y+=pixel_height;
-            
             }
-
         }
 
         function resize(c, wrapper, grid, ctx, x, y){
@@ -223,17 +229,117 @@
 
             grid.width = c.width
             grid.height = c.height
+            document.getElementById("censorGrid").width = c.width;
+            document.getElementById("censorGrid").height = c.height;
 
-            ctx.fillStyle = "white"; 
-            ctx.fillRect(0, 0, c.width, c.height);
+            ctx.clearRect(0, 0, c.width, c.height);
+
         }
+
+        function getPixelColor(ctx, x, y) {
+
+            const pixel = ctx.getImageData(x, y, 1, 1).data;
+            return {
+                r: pixel[0],
+                g: pixel[1],
+                b: pixel[2],
+                a: pixel[3]
+            };
+        }
+
+        function mosaic(){
+            const c = document.getElementById("myCanvas");
+            const ctx = c.getContext('2d');
+
+            const censored = document.getElementById("censorGrid");
+            const censor_ctx = censored.getContext('2d', { willReadFrequently: true });
+            
+            let x_px = 0;
+            let y_px = 0;
+            let canvas_width = c.width;
+            let canvas_height = c.height;
+            let pixel_width = (canvas_width / document.getElementById("pixels").value );
+            let pixel_height = (canvas_height / document.getElementById("pixels").value );
+            let pixel = "";
+            let x_spacing = pixel_width;
+            let y_spacing = pixel_height;
+            let r = 0;
+            let g = 0;
+            let b = 0;
+            let a = 0;
+            let pixels = document.getElementById("pixels").value
+            let current_x_pixel = 0;
+            let current_y_pixel = 0;
+
+            while(current_y_pixel < pixels){
+                while(current_x_pixel < pixels){
+                    r = 0; g = 0; b = 0; a = 0;
+
+                    const data = censor_ctx.getImageData(
+                        current_x_pixel * pixel_width,
+                        current_y_pixel * pixel_height,
+                        pixel_width,
+                        pixel_height
+                    ).data;
+
+                    for(let i = 0; i < data.length; i += 4){
+                        r += data[i];
+                        g += data[i+1];
+                        b += data[i+2];
+                        a += data[i+3];
+                    }
+
+                    r /= pixel_width * pixel_height;
+                    g /= pixel_width * pixel_height;
+                    b /= pixel_width * pixel_height;
+                    a /= pixel_width * pixel_height;
+
+                    ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${a / 255})`;
+                    ctx.fillRect(current_x_pixel * pixel_width, current_y_pixel * pixel_height, pixel_width, pixel_height);
+                    current_x_pixel++;
+                }
+                current_x_pixel = 0;
+                current_y_pixel++;
+            }
+        }
+
+        function snapshot(c, drawn_history, max_history){
+            drawn_history.push(c.toDataURL());
+            console.log(drawn_history.length)
+            if (drawn_history.length > max_history) {
+                drawn_history.shift();
+            }
+        }
+
+        function undo(c, ctx, drawn_history){
+            if (drawn_history.length === 0) {
+                return;
+            }
+            const snap = drawn_history.pop();
+                        console.log(drawn_history.length)
+
+            const img = new Image();
+            img.src = snap;
+            img.onload = () => {
+                ctx.clearRect(0, 0, c.width, c.height);
+                ctx.drawImage(img, 0, 0)
+
+            }
+            
+        }
+
+
         function main(){
             let drawing = false;
             let tool = "pen";
             let click = false;
             let pixel_edit = false;
+            let pixelize = false;
+            let drawn_history = new Array();
+            let max_history = 10;
 
             document.getElementById("brushType").value = "pen";
+
 
             const c = document.getElementById("myCanvas");
             const ctx = c.getContext('2d');
@@ -241,7 +347,7 @@
             const wrapper = document.querySelector(".canvas-wrapper");
             const grid = document.getElementById("grid");
             resize(c, wrapper, grid, ctx, (window.innerWidth), (window.innerHeight));
-
+            snapshot(c, drawn_history, max_history);
 
             document.getElementById("brushType").addEventListener("input", () => {
                 tool = document.getElementById("brushType").value;
@@ -250,8 +356,13 @@
                 drawing = true; 
                 click = true; 
                 update_pos(drawing, tool, click, pixel_edit);
+                snapshot(c, drawn_history, max_history);
+
             })
-            document.getElementById("myCanvas").addEventListener("mouseup", () => {drawing = false; click = false;})
+            document.getElementById("myCanvas").addEventListener("mouseup", () => {
+                drawing = false; 
+                click = false;
+            })
             document.getElementById("myCanvas").addEventListener("mousemove", () => {
                 const size = cursor.offsetWidth;
 
@@ -287,10 +398,15 @@
             document.getElementById("pixels").addEventListener("input", () => {
                 document.getElementById("gridSize").innerHTML = `${document.getElementById("pixels").value}x${document.getElementById("pixels").value} px`;
                 show_grid();
+                if(pixelize){
+                    mosaic();
+                }
             });
             
             let custom_x = document.getElementById("x");
             let custom_y = document.getElementById("y");
+            custom_x.value = c.width
+            custom_y.value = c.height;
 
             custom_x.addEventListener("input", () => {
                 custom_x.value = custom_x.value.replace(/[^0-9]/g, "");
@@ -308,17 +424,98 @@
 
             custom_y.addEventListener("input", () => {
                 custom_y.value = custom_y.value.replace(/[^0-9]/g, "");
-                if(custom_y.value > window.innerHeight - 100){
+                if(custom_y.value > window.innerHeight - 100 - document.querySelector("section").offsetHeight){
                     custom_x.value = window.innerWidth -100;
                 }
                 if(custom_x.value && custom_y.value){
-                    if(custom_y.value > window.innerHeight - 100){
-                        custom_x.value = window.innerWidth -100;
-                        custom_y.value = window.innerHeight - 100;
+                    if(custom_y.value > window.innerHeight - 100 - document.querySelector("section").offsetHeight){
+                        custom_x.value = window.innerWidth - 100;
+                        custom_y.value = window.innerHeight - 100 - document.querySelector("section").offsetHeight;
                     }
                     resize(c, wrapper, grid, ctx, (Number(custom_x.value) + 100), (Number(custom_y.value) + document.querySelector("section").offsetHeight + 100))                    
                 }
             });
+
+            document.getElementById("loadImage").addEventListener("change", () => {
+                ctx.clearRect(0, 0, c.width, c.height);
+                const censored = document.getElementById("censorGrid");
+                const censor_ctx = censored.getContext('2d', { willReadFrequently: true });
+
+                const img = new Image();
+
+                let file = document.getElementById("loadImage").files[0];
+                const url = URL.createObjectURL(file);
+
+                img.src = url;
+                img.onload = function() {
+                    if (img.width > window.innerWidth - 1 || img.height > window.innerHeight - 100 - document.querySelector("section").offsetHeight){
+                        alert("Image Too Large!");
+                        URL.revokeObjectURL(url); 
+                        return;
+                    }
+                    resize(c, wrapper, grid, ctx, (img.width + 100), (img.height + document.querySelector("section").offsetHeight + 100))                    
+                    custom_x.value = img.width;
+                    custom_y.value = img.height;
+                    ctx.drawImage(img, 0, 0); 
+                    censor_ctx.drawImage(img, 0, 0); 
+
+                    URL.revokeObjectURL(url); 
+                    show_grid();
+                    if(pixelize){
+                        mosaic();
+                    }
+
+                }
+
+            });
+
+            document.getElementById("pixelize").addEventListener("click", () => {
+                if(!pixelize){
+                    pixelize = true;
+                    document.getElementById("pixelize").innerHTML = "Pixelize Image: On";
+                    const censored = document.getElementById("censorGrid");
+                    const censor_ctx = censored.getContext('2d', { willReadFrequently: true });
+                    censor_ctx.clearRect(0, 0, c.width, c.height);
+
+                    const dataURL = c.toDataURL('image/png');
+
+                    const img = new Image();
+
+                    img.src = dataURL;
+                    img.onload = function() {
+                        resize(c, wrapper, grid, ctx, (img.width + 100), (img.height + document.querySelector("section").offsetHeight + 100))                    
+                        custom_x.value = img.width;
+                        custom_y.value = img.height;
+                        censor_ctx.drawImage(img, 0, 0); 
+                        show_grid();
+                        URL.revokeObjectURL(dataURL);
+                        mosaic();
+                    }
+                }
+                else{
+                    pixelize = false;
+                    document.getElementById("pixelize").innerHTML = "Pixelize Image: Off";
+                    show_grid();
+                    const censored = document.getElementById("censorGrid");
+                    const censor_ctx = censored.getContext('2d', { willReadFrequently: true });
+                    const dataURL = censored.toDataURL('image/png');
+
+
+                    const img = new Image();
+
+
+                    img.src = dataURL;
+                    img.onload = function() {
+                        ctx.drawImage(img, 0, 0); 
+                    }
+                }
+
+                
+            }); 
+            document.getElementById("undo").addEventListener("click", ()=>{
+                undo(c, ctx, drawn_history);
+            });
+
         }
 
         window.addEventListener("load", main);
