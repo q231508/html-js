@@ -229,8 +229,8 @@
             c.width = wrapper.offsetWidth;
             c.height = wrapper.offsetHeight;
 
-            grid.width = c.width
-            grid.height = c.height
+            grid.width = c.width;
+            grid.height = c.height;
             document.getElementById("censorGrid").width = c.width;
             document.getElementById("censorGrid").height = c.height;
 
@@ -365,6 +365,24 @@
             document.getElementById("myCanvas").addEventListener("mouseup", () => {
                 drawing = false; 
                 click = false;
+                const censored = document.getElementById("censorGrid");
+                const censor_ctx = censored.getContext('2d', { willReadFrequently: true });
+
+                const img = new Image();
+
+                const url = c.toDataURL()
+
+                img.src = url;
+                img.onload = function() {
+                    censor_ctx.drawImage(img, 0, 0); 
+
+                    URL.revokeObjectURL(url); 
+                    show_grid();
+                    if(pixelize){
+                        mosaic();
+                    }
+
+                }
             })
             document.getElementById("myCanvas").addEventListener("mousemove", () => {
                 const size = cursor.offsetWidth;
