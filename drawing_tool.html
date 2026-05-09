@@ -115,7 +115,9 @@
         </section>
         <section>
             <button id="undo">Undo</button>
+            <button id="large_images">Enable Large Images: Off</button>
         </section>
+        <section>Large images may misbehave</section> 
 
 
     </body>
@@ -337,6 +339,7 @@
             let pixelize = false;
             let drawn_history = new Array();
             let max_history = 10;
+            let large_images = false;
 
             document.getElementById("brushType").value = "pen";
 
@@ -449,9 +452,12 @@
                 img.src = url;
                 img.onload = function() {
                     if (img.width > window.innerWidth - 1 || img.height > window.innerHeight - 100 - document.querySelector("section").offsetHeight){
-                        alert("Image Too Large!");
-                        URL.revokeObjectURL(url); 
-                        return;
+                        if(!large_images){
+                            alert("Image Too Large!");
+                            URL.revokeObjectURL(url); 
+                            return;
+                        }
+
                     }
                     resize(c, wrapper, grid, ctx, (img.width + 100), (img.height + document.querySelector("section").offsetHeight + 100))                    
                     custom_x.value = img.width;
@@ -514,6 +520,16 @@
             }); 
             document.getElementById("undo").addEventListener("click", ()=>{
                 undo(c, ctx, drawn_history);
+            });
+            document.getElementById("large_images").addEventListener("click", () => {
+                if(!large_images){
+                    large_images = true;
+                    document.getElementById("large_images").innerHTML = "Enable Large Images: On";
+                }
+                else{
+                    large_images = false;
+                    document.getElementById("large_images").innerHTML = "Enable Large Images: Off";
+                }
             });
 
         }
