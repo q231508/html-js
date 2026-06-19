@@ -117,7 +117,7 @@
             <span style="color: rgb(211, 113, 47);">LZ@LAPTOP</span><span style="color: rgba(240, 255, 255, 0.793)">:</span><span style="color: cadetblue;">/mnt/c/Users/p1/</span><span style="color: rgba(240, 255, 255, 0.793)">$ </span>
             cat bio.txt<br>
             <span hidden id="bio">
-                Hello! My name is Lumbani Zimba. I'm a new grad* from the University of Alberta. <br>
+                Hello! My name is Lumbani Zimba. I'm a new grad from the University of Alberta. <br>
                 My interests include cybersecurity, machine learning, software development, and computer networks.<br>
                 I enjoy building practical projects and continuously learning new technologies. <br>
                 Lately, I've been especially interested in working with HTML and exploring how the simple, modular structure can create flexible and engaging designs. <br>
@@ -151,7 +151,7 @@
 
         <section  hidden id="cd">
             <header>
-                <h2 id="cdText" style="text-align: center;">*Countdown until graduation</h2>
+                <h2 id="cdText" style="text-align: center;">Graduated</h2>
             </header>
                 <input hidden type="datetime-local" id="cdDateTime" value="2026-06-17T10:00">
                 <div id="countdown" style="text-align: center; color: rgba(240, 255, 255, 0.793)"></div>
@@ -347,7 +347,7 @@
                     ${String(this.minutes)} Minutes ${String(this.seconds)} Seconds remaining`;
                 }
                 else{
-                    document.getElementById("cdText").innerText = "*Officially Graduated"
+                    document.getElementById("cdText").innerText = "Graduated"
                     document.getElementById("countdown").innerHTML = `${String(this.years)} Years
                     ${String(this.months)} Months ${String(this.days)} Days ${String(this.hours)} Hours 
                     ${String(this.minutes)} Minutes ${String(this.seconds)} Seconds ago`;
