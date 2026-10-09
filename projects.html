@@ -97,9 +97,24 @@
             
         </div>
 
-        <h2>
+        <div id="newestProject">
+            <h2>Featured Project:</h2>
+            <h2>Mind the Gap: A Celeste Reinforcement Learning Project
+                [<span id="python">Python</span>]
+            </h2>
+            <p>I designed and developed an introductory reinforcement learning project that uses computer vision to clear a room in Celeste. <br>
+                Using 60 screenshots per second, I created a vision system that isolates the character model from the background and tracks her movement using meanshift.<br>
+                The system feeds the character's position into a SARSA TD(0) learning loop. After considering hardware and time limitations, I reduced the action space and used reward shaping to improve performance. <br>
+                These changes improved performance from a 1% clearance rate to a 21% clearance rate when evaluating the produced policies over 100 attempts.<br>
+                [<a style="color: #e0bb72;" href="https://www.github.com/q231508/mind-the-gap">Github</a>]
+                [<a style="color: #e0bb72;" href="https://github.com/q231508/Mind-The-Gap/blob/main/README.md">Write-Up</a>]
+
+            </p>
+        </div>
+
+        <h1>
             Select a language:
-        </h2>
+        </h1>
         <select id="language">
             <option value="default" selected="selected">Select All</option>
             <option value="python.html">Python</option>

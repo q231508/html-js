@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+            <style>
+                * {
+                    cursor: default
+                }
+                /* From https://jsfiddle.net/CRSVU/ */
+                html, body { height: 100%; padding: 0; margin: 0; }
+
+                p {
+                    font-weight: bold;
+                    padding-left: 5px;
+                }
+
+                #cursor { 
+                    position: fixed;
+                    z-index: 90;
+                    color: rgba(255, 255, 255, 0);
+                    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+                    -webkit-user-select: none;
+                    -ms-user-select: none;
+                    user-select: none;
+                    pointer-events: none;
+                    border: 1px solid rgb(0, 0, 0);
+                    transform: translate(-50%, -50%); 
+                    margin: 0;       
+                    padding: 0;       
+                    line-height: 0;   
+                    font-size: 0;    
+                    box-sizing: border-box; 
+                }
+
+                section {
+                    z-index: 1000;
+                    text-align: center;
+                    top: 0;
+                    width: 100%;
+                    height: 40px;
+                }
+                .canvas-wrapper {
+                    position: relative; 
+                    margin-left: auto;  
+                    margin-right: auto;
+                }
+
+                .canvas-wrapper canvas {
+                    position: absolute;  
+                    left: 0;
+                    top: 0;
+                    border: 1px solid rgb(0, 0, 0);
+                    cursor: crosshair;
+                }
+
+                #grid {
+                    z-index: 10; /* Higher value = "closer" to the user */
+                    pointer-events: none; 
+                    background-color: #00000000;
+                }     
+                #myCanavs {
+                    z-index: 9; /* Higher value = "closer" to the user */
+                    pointer-events: none; 
+                    background-color: #00000000;
+                }               
+
+
+                
+            </style>
+    </head>
+    <body>
+        <p id="cursor" hidden rea style="color: rgb(255, 255, 255);"></p>
+
+        <section id="toolBar" >
+            <span>
+
+                <h3>
+                    Canvas Size: 
+                    <input type="number" step="1" style="width: 5ch;" id="x">x<input type="number" step="1" style="width: 5ch;" id="y">
+                    Color: 
+                    <span>                
+                        <input type="Color" id="color picker" style="height: 22px;width: 50px">
+                        Size:
+                        <select id="brushSize">
+                            <option selected="selected" value=1>1px</option>
+                            <option value=2>2px</option>
+                            <option value=4>4px</option>
+                            <option value=8>8px</option>
+                            <option value=16>16px</option>
+                            <option value=32>32px</option>
+                            <option value=64>64px</option>
+                        </select>
+                        Type:
+                        <select id="brushType">
+                            <option selected="selected" value="pen">pen</option>
+                            <option value="eraser">eraser</option>
+                        </select>
+                        Position:<span id="xpos"></span><span id="ypos"></span>
+                    </span>
+                </h3>
+            </span>
+        </section>
+        <div class="canvas-wrapper">
+                <canvas id="myCanvas" style="z-index: 9;" >
+                Your browser does not support the HTML canvas tag.</canvas>
+                <canvas  id="grid">Your browser does not support the HTML canvas tag.</canvas>
+                <canvas style="z-index: -9; background: rgb(195, 181, 181)" id="targetGrid"></canvas>
+
+        </div>
+        <br>
+        <section>
+            <button id="clear">Clear Canvas</button>
+            <input type="file" id="loadImage" style="width: 12ch;" accept="image/*">
+            <button id="export">Export PNG</button>
+            <button id="pixelize">Pixelize Image: Off</button>
+            <button id="pixel_mode">Pixel Editor: Off</button>
+            <label for="pixels">Pixelation:</label>
+            <input type="range" id="pixels" name="pixels" min="1" max="100" value="1">
+            <span id="gridSize">1x1 px</span>
+        </section>
+        <section>
+            <button id="undo">Undo</button>
+            <button id="large_images">Enable Large Images: Off</button>
+        </section>
+        <section>Large images may misbehave</section> 
+
+
+    </body>
+    <script>
+        function update_pos(drawing, tool, click, shot, hit){
+            const c = document.getElementById("grid");
+            const ctx = c.getContext("2d");
+            const background = document.getElementById("myCanvas");
+            const b_ctx = background.getContext("2d");
+
+            let target = document.getElementById("targetGrid");
+            
+            let size = document.getElementById("brushSize").value;
+            document.getElementById("cursor").style.width = `${size}px`;
+            document.getElementById("cursor").style.height = `${size}px`;
+            
+            if(tool == "pen"){
+                ctx.fillStyle = document.getElementById("color picker").value;
+                c.style.cursor = "crosshair"
+                document.getElementById("cursor").hidden = false;
+
+            }
+            else{
+                ctx.fillStyle = 'white';
+                document.getElementById("cursor").hidden = false;
+            }
+
+
+            /* Thanks to https://medium.com/@ryan_forrester_/how-to-get-mouse-position-in-javascript-37e4772a3f21
+                For the simple example
+            */
+            let rect = document.getElementById("myCanvas").getBoundingClientRect();
+            let x = Math.floor(event.clientX - rect.left);
+            let y = Math.floor(event.clientY - rect.top);
+            if (y < 0){ y = 0; }
+            if (x < 0){ x = 0; }
+
+            let x_px = 1;
+            let y_px = 1;
+            let canvas_width = c.width;
+            let canvas_height = c.height;
+            let pixel_width = (canvas_width / document.getElementById("pixels").value );
+            let pixel_height = (canvas_height / document.getElementById("pixels").value );
+
+            let x_spacing = pixel_width;
+            let y_spacing = pixel_height;
+
+            if(!shot){
+                document.getElementById("xpos").innerHTML = `${x}, `;
+                document.getElementById("ypos").innerHTML = `${y}px`;
+            }
+            else{
+                
+            
+                while(x_spacing < x){
+                    x_spacing+=pixel_width;
+                    x_px+=1;
+                }
+                while(y_spacing < y){
+                    y_spacing+=pixel_height;
+                    y_px+=1;
+                }
+                document.getElementById("xpos").innerHTML = `${x_px}, `;
+                document.getElementById("ypos").innerHTML = `${y_px}px`;
+            }
+
+        
+            ctx.clearRect(0, 0, c.width, c.height);
+            ctx.strokeStyle = "black"
+            let x_top = 0; let x_bot = 0;
+            let x_inner_top = x-canvas_width/4;
+            let x_inner_bot = x-canvas_width/4;
+            let y_inner = y-canvas_height/4; let y_inner_right = y_inner;
+            let y_right_canvas = 0; let y_left_canvas=0;
+
+            // draw background ONCE
+            b_ctx.clearRect(0, 0, c.width, c.height);
+
+            b_ctx.fillStyle = "#a2846a";
+            b_ctx.fillRect(0, 0, c.width, c.height);
+
+            // cut out window
+            b_ctx.clearRect(
+                x - canvas_width / 4,
+                y - canvas_height / 4,
+                canvas_width / 2,
+                canvas_height / 2
+            );
+            while(x < canvas_width){
+                            ctx.strokeStyle = "black"
+
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, canvas_height);
+
+                ctx.moveTo(x-canvas_width/4, y-canvas_height/4);
+                ctx.lineTo(0, 0);
+
+                ctx.moveTo(x+canvas_width/4, y-canvas_height/4);
+                ctx.lineTo(canvas_width, 0);
+
+
+                ctx.moveTo(x+canvas_width/4, y+canvas_height/4);
+                ctx.lineTo(canvas_width, canvas_height);
+                for(let xt = canvas_width/4; xt <= canvas_width/4 *3; xt+=10){
+                    for(let yt = canvas_height/4; yt <= canvas_height/4 *3; yt+=10){
+                        if(yt!= canvas_height/4 || yt!= canvas_height/4*3){
+                            if(xt == canvas_width/4){
+                                ctx.moveTo(x-canvas_width/4, y_inner);
+                                ctx.lineTo(0, y_left_canvas);
+                                y_left_canvas+= 20
+                                y_inner+=10
+
+
+                                
+                            }
+                            if(xt >= canvas_width/4*3-10){
+                                ctx.moveTo(x+canvas_width/4, y_inner_right);
+                                ctx.lineTo(canvas_width, y_right_canvas); 
+                                y_right_canvas+= 20
+                                y_inner_right+=10
+
+
+                            }
+
+                                
+                        }
+                    
+                        if(yt == canvas_height/4){
+                            ctx.moveTo(x_inner_top, y-canvas_height/4);
+                            ctx.lineTo(x_top, 0);
+                            x_top += 20
+                            x_inner_top+=10
+
+
+                            
+                            }
+                        if(yt >= canvas_height/4*3-10){
+                            ctx.moveTo(x_inner_bot, y+canvas_height/4);
+                            ctx.lineTo(x_bot, canvas_height);
+                            x_bot += 20
+                            x_inner_bot+=10
+
+
+                            
+                            }
+
+                        
+                        
+                        //yt+=1000
+
+                    }
+                }
+
+                ctx.stroke();
+
+                x+=pixel_width;
+  
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(canvas_width, y);
+                for(let xt = canvas_width/4; xt <= canvas_width/4 *3; xt+=1){
+                    for(let yt = canvas_height/4; yt <= canvas_height/4 *3; yt+=10){
+                        if(yt!= canvas_height/4 || yt!= canvas_height/4*3){
+                            
+                        }
+                    }
+                }
+                ctx.stroke();
+                y+=pixel_height;
+            }
+            if(click){
+                if(!shot){
+
+
+                    const data = target.getContext("2d").getImageData(
+                        x- pixel_width,
+                        y- pixel_height,
+                        1,
+                        1
+                    ).data;
+                        console.log(`rgb(${data[0]}, ${data[1]}, ${data[2]}, ${data[3]})`)
+
+                    if(`rgb(${data[0]}, ${data[1]}, ${data[2]}, ${data[3]})` != "rgb(0, 0, 0, 0)" &&
+                        `rgb(${data[0]}, ${data[1]}, ${data[2]})` != "rgb(0, 0, 0)" &&
+                        `rgb(${data[0]}, ${data[1]}, ${data[2]})` != "rgb(255, 255, 0)"){
+                            hit = true;
+                        console.log("yerrrrrrrr")
+                    };
+                    shoot(target, target.getContext("2d"), 0, x-pixel_width, y-pixel_height)
+                    shot = true;
+                }
+                
+            }
+            document.getElementById("cursor").style.left = `${event.clientX}px`;
+            document.getElementById("cursor").style.top = `${event.clientY}px`;
+            return [shot, hit];
+
+        }
+
+
+        function show_grid(){
+            const c = document.getElementById("grid");
+            const ctx = c.getContext('2d');
+
+            let canvas_width = c.width;
+            let canvas_height = c.height;
+            let pixel_width = (canvas_width / document.getElementById("pixels").value);
+            let pixel_height = (canvas_height / document.getElementById("pixels").value);
+
+            let x = pixel_width;
+            let y = pixel_height;
+        
+            ctx.clearRect(0, 0, c.width, c.height);
+            ctx.fillStyle = "black"
+            while(x < canvas_width){
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, canvas_height);
+
+                ctx.stroke();
+                x+=pixel_width;
+            }
+            while(y < canvas_height){
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(canvas_width, y);
+
+                ctx.stroke();
+                y+=pixel_height;
+            }
+        }
+
+        function resize(c, wrapper, grid, ctx, x, y){
+            wrapper.style.width = x - 100 +"px";
+            wrapper.style.height = y - document.querySelector("section").offsetHeight - 100 +"px";
+
+            c.width = wrapper.offsetWidth;
+            c.height = wrapper.offsetHeight;
+
+            grid.width = c.width;
+            grid.height = c.height;
+            document.getElementById("targetGrid").width = c.width;
+            document.getElementById("targetGrid").height = c.height;
+
+            ctx.clearRect(0, 0, c.width, c.height);
+
+        }
+
+        function getPixelColor(ctx, x, y) {
+
+            const pixel = ctx.getImageData(x, y, 1, 1).data;
+            return {
+                r: pixel[0],
+                g: pixel[1],
+                b: pixel[2],
+                a: pixel[3]
+            };
+        }
+
+        function mosaic(){
+            const c = document.getElementById("myCanvas");
+            const ctx = c.getContext('2d');
+
+            const censored = document.getElementById("targetGrid");
+            const censor_ctx = censored.getContext('2d', { willReadFrequently: true });
+            
+            let x_px = 0;
+            let y_px = 0;
+            let canvas_width = c.width;
+            let canvas_height = c.height;
+            let pixel_width = (canvas_width / document.getElementById("pixels").value );
+            let pixel_height = (canvas_height / document.getElementById("pixels").value );
+            let pixel = "";
+            let x_spacing = pixel_width;
+            let y_spacing = pixel_height;
+            let r = 0;
+            let g = 0;
+            let b = 0;
+            let a = 0;
+            let pixels = document.getElementById("pixels").value
+            let current_x_pixel = 0;
+            let current_y_pixel = 0;
+
+            while(current_y_pixel < pixels){
+                while(current_x_pixel < pixels){
+                    r = 0; g = 0; b = 0; a = 0;
+
+                    const data = censor_ctx.getImageData(
+                        current_x_pixel * pixel_width,
+                        current_y_pixel * pixel_height,
+                        pixel_width,
+                        pixel_height
+                    ).data;
+
+                    for(let i = 0; i < data.length; i += 4){
+                        r += data[i];
+                        g += data[i+1];
+                        b += data[i+2];
+                        a += data[i+3];
+                    }
+
+                    r /= pixel_width * pixel_height;
+                    g /= pixel_width * pixel_height;
+                    b /= pixel_width * pixel_height;
+                    a /= pixel_width * pixel_height;
+
+                    ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${a / 255})`;
+                    ctx.fillRect(current_x_pixel * pixel_width, current_y_pixel * pixel_height, pixel_width, pixel_height);
+                    current_x_pixel++;
+                }
+                current_x_pixel = 0;
+                current_y_pixel++;
+            }
+        }
+
+        function snapshot(c, drawn_history, max_history){
+            drawn_history.push(c.toDataURL());
+            console.log(drawn_history.length)
+            if (drawn_history.length > max_history) {
+                drawn_history.shift();
+            }
+        }
+
+        function undo(c, ctx, drawn_history){
+            if (drawn_history.length === 0) {
+                return;
+            }
+            const snap = drawn_history.pop();
+                        console.log(drawn_history.length)
+
+            const img = new Image();
+            img.src = snap;
+
+            
+        }
+
+        function random_targets(canvas, ctx, hits){
+            if(hits == 10){
+                console.log(hits)
+                return;;
+            }
+            ctx.clearRect(0, 0, canvas.width, canvas.height)
+            let x = Math.random() * (canvas.width - 100) + 50;
+            let y = Math.random() * (canvas.height - 100) + 50;
+            ctx.fillStyle = `red`;
+            ctx.fillRect(x, y, 50, 50);
+            ctx.fillStyle = `white`;
+            ctx.fillRect(x+10, y+10, 30, 30);
+            ctx.fillStyle = `red`;
+            ctx.fillRect(x+20, y+20, 10, 10);
+            
+        }
+
+        function shoot(canvas, ctx, hits, x, y){
+            x-=5
+            y-=5
+            ctx.fillStyle = `black`;
+            ctx.fillRect(x, y, 10, 10);
+            ctx.fillStyle = `yellow`;
+            ctx.fillRect(x+3, y+3, 4, 4); 
+        }
+        
+
+
+        function main(){
+            let drawing = false;
+            let tool = "pen";
+            let click = false;
+            let shot = false;
+            let pixelize = false;
+            let drawn_history = new Array();
+            let max_history = 10;
+            let large_images = false;
+            let hit = false
+            let hits = 0;
+
+            document.getElementById("brushType").value = "pen";
+
+
+            const c = document.getElementById("myCanvas");
+            const ctx = c.getContext('2d');
+            const cursor = document.getElementById("cursor");
+            const wrapper = document.querySelector(".canvas-wrapper");
+            const grid = document.getElementById("grid");
+            const target = document.getElementById("targetGrid");
+            const t = target.getContext("2d")
+            resize(c, wrapper, grid, ctx, (window.innerWidth), (window.innerHeight));
+            snapshot(c, drawn_history, max_history);
+
+            document.getElementById("brushType").addEventListener("input", () => {
+                tool = document.getElementById("brushType").value;
+            })
+            document.getElementById("myCanvas").addEventListener("mousedown", () => {
+                if(hits != 10){
+                    if(!click){
+                        click = true; 
+                        let res = update_pos(drawing, tool, click, shot, hit);
+                        shot = res[0]
+                        hit = res[1]
+                        console.log(res)
+                        if(hit){
+                            hits += 1
+                            random_targets(target, t, hits);
+                            hit = false;
+                        }
+                    }
+                }
+
+
+            })
+            document.getElementById("myCanvas").addEventListener("mouseup", () => {
+                drawing = false; 
+                click = false;
+                shot = false;
+
+
+            })
+            document.getElementById("myCanvas").addEventListener("mousemove", () => {
+                const size = cursor.offsetWidth;
+                click = false;
+                cursor.style.left = `${event.clientX}px`;
+                cursor.style.top = `${event.clientY}px`;
+                update_pos(drawing, tool, click, shot);
+            });
+
+            document.getElementById("export").addEventListener("click", () => {
+                const dataURL = c.toDataURL('image/png');
+
+                const link = document.createElement('a');
+                link.download = 'my-image.png';
+                link.href = dataURL;
+                link.click();
+            });
+            document.getElementById("clear").addEventListener("click", () => {
+                ctx.fillStyle = "white"; 
+                ctx.fillRect(0, 0, c.width, c.height);
+            });
+            document.getElementById("pixel_mode").addEventListener("click", () => {
+                if(!shot){
+                    shot = true;
+                    document.getElementById("pixel_mode").innerHTML = "Pixel Editor: On";
+                    grid.hidden = false;
+                }
+                else{
+                    shot = false;
+                    document.getElementById("pixel_mode").innerHTML = "Pixel Editor: Off";
+                    grid.hidden = true;
+                }
+            });
+            document.getElementById("pixels").addEventListener("input", () => {
+                document.getElementById("gridSize").innerHTML = `${document.getElementById("pixels").value}x${document.getElementById("pixels").value} px`;
+                show_grid();
+                if(pixelize){
+                    mosaic();
+                }
+            });
+            
+            let custom_x = document.getElementById("x");
+            let custom_y = document.getElementById("y");
+            custom_x.value = c.width
+            custom_y.value = c.height;
+
+            custom_x.addEventListener("input", () => {
+                custom_x.value = custom_x.value.replace(/[^0-9]/g, "");
+                if(custom_x.value > window.innerWidth - 100){
+                        custom_x.value = window.innerWidth -100;
+                }
+                if(custom_x.value && custom_y.value){
+                    if(custom_x.value > window.innerWidth - 100){
+                        custom_x.value = window.innerWidth -100;
+                        custom_y.value = window.innerHeight - 100;
+                    }
+                    resize(c, wrapper, grid, ctx, (Number(custom_x.value) + 100), (Number(custom_y.value) + document.querySelector("section").offsetHeight + 100))
+                }
+            });
+
+            custom_y.addEventListener("input", () => {
+                custom_y.value = custom_y.value.replace(/[^0-9]/g, "");
+                if(custom_y.value > window.innerHeight - 100 - document.querySelector("section").offsetHeight){
+                    custom_x.value = window.innerWidth -100;
+                }
+                if(custom_x.value && custom_y.value){
+                    if(custom_y.value > window.innerHeight - 100 - document.querySelector("section").offsetHeight){
+                        custom_x.value = window.innerWidth - 100;
+                        custom_y.value = window.innerHeight - 100 - document.querySelector("section").offsetHeight;
+                    }
+                    resize(c, wrapper, grid, ctx, (Number(custom_x.value) + 100), (Number(custom_y.value) + document.querySelector("section").offsetHeight + 100))                    
+                }
+            });
+
+            document.getElementById("loadImage").addEventListener("change", () => {
+                ctx.clearRect(0, 0, c.width, c.height);
+                const censored = document.getElementById("targetGrid");
+                const censor_ctx = censored.getContext('2d', { willReadFrequently: true });
+
+                const img = new Image();
+
+                let file = document.getElementById("loadImage").files[0];
+                const url = URL.createObjectURL(file);
+
+                img.src = url;
+                img.onload = function() {
+                    if (img.width > window.innerWidth - 1 || img.height > window.innerHeight - 100 - document.querySelector("section").offsetHeight){
+                        if(!large_images){
+                            alert("Image Too Large!");
+                            URL.revokeObjectURL(url); 
+                            return;
+                        }
+
+                    }
+                    resize(c, wrapper, grid, ctx, (img.width + 100), (img.height + document.querySelector("section").offsetHeight + 100))                    
+                    custom_x.value = img.width;
+                    custom_y.value = img.height;
+                    ctx.drawImage(img, 0, 0); 
+                    censor_ctx.drawImage(img, 0, 0); 
+
+                    URL.revokeObjectURL(url); 
+                    show_grid();
+                    if(pixelize){
+                        mosaic();
+                    }
+
+                }
+
+            });
+
+            document.getElementById("pixelize").addEventListener("click", () => {
+                if(!pixelize){
+                    pixelize = true;
+                    document.getElementById("pixelize").innerHTML = "Pixelize Image: On";
+                    const censored = document.getElementById("targetGrid");
+                    const censor_ctx = censored.getContext('2d', { willReadFrequently: true });
+                    censor_ctx.clearRect(0, 0, c.width, c.height);
+
+                    const dataURL = c.toDataURL('image/png');
+
+                    const img = new Image();
+
+                    img.src = dataURL;
+                    img.onload = function() {
+                        resize(c, wrapper, grid, ctx, (img.width + 100), (img.height + document.querySelector("section").offsetHeight + 100))                    
+                        custom_x.value = img.width;
+                        custom_y.value = img.height;
+                        censor_ctx.drawImage(img, 0, 0); 
+                        show_grid();
+                        URL.revokeObjectURL(dataURL);
+                        mosaic();
+                    }
+                }
+                else{
+                    pixelize = false;
+                    document.getElementById("pixelize").innerHTML = "Pixelize Image: Off";
+                    show_grid();
+                    const censored = document.getElementById("targetGrid");
+                    const censor_ctx = censored.getContext('2d', { willReadFrequently: true });
+                    const dataURL = censored.toDataURL('image/png');
+
+
+                    const img = new Image();
+
+
+                    img.src = dataURL;
+                    img.onload = function() {
+                        ctx.drawImage(img, 0, 0); 
+                    }
+                }
+
+                
+            }); 
+            document.getElementById("undo").addEventListener("click", ()=>{
+                random_targets(target, t, 0);
+            });
+            document.getElementById("large_images").addEventListener("click", () => {
+                if(!large_images){
+                    large_images = true;
+                    document.getElementById("large_images").innerHTML = "Enable Large Images: On";
+                }
+                else{
+                    large_images = false;
+                    document.getElementById("large_images").innerHTML = "Enable Large Images: Off";
+                }
+            });
+
+        }
+
+        window.addEventListener("load", main);
+    </script>
+</html>
